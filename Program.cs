@@ -1,53 +1,55 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Discord_Bot.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Discord_Bot
 {
     public class Program
     {
-        private DiscordSocketClient _client;
 
-        public static void Main(string[] args)
-            => new Program().MainAsync().GetAwaiter().GetResult();
+		private DiscordSocketClient _client;
+		private CommandService _commands;
 
-        private Task Log(LogMessage msg)
-        {
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
-        }
+		static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
-        public async Task MainAsync()
-        {
-            //  You can assign your bot token to a string, and pass that in to connect.
-            //  This is, however, insecure, particularly if you plan to have your code hosted in a public repository.
-            var token = "";
+		public async Task MainAsync()
+		{
+			// When working with events that have Cacheable<IMessage, ulong> parameters,
+			// you must enable the message cache in your config settings if you plan to
+			// use the cached message entity. 
+			var _config = new DiscordSocketConfig { MessageCacheSize = 100 };
+			_client = new DiscordSocketClient(_config);
+			_commands = new CommandService();
 
-            // Some alternative options would be to keep your token in an Environment Variable or a standalone file.
-            // var token = Environment.GetEnvironmentVariable("NameOfYourEnvironmentVariable");
-            try
-            {
-                token = File.ReadAllText("token.txt");
-            }
-            catch (FileNotFoundException)
-            {
-                await Log(new LogMessage(LogSeverity.Critical, "server", "Could not find token.txt. Please ensure the file is located in the same folder as 'Discord Bot.exe'"));
-                return;
-            }
-            // var token = JsonConvert.DeserializeObject<AConfigurationClass>(File.ReadAllText("config.json")).Token;
+			var commandHandler =  new CommandHandler(_client, _commands);
+			await commandHandler.InstallCommandsAsync();
 
-            _client = new DiscordSocketClient();
+			await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DiscordToken"));
+			await _client.StartAsync();
 
-            _client.Log += Log;
+			_client.MessageUpdated += MessageUpdated;
+			_client.Ready += () =>
+			{
+				Console.WriteLine("Bot is connected!");
+				return Task.CompletedTask;
+			};
+	
 
-            await _client.LoginAsync(TokenType.Bot, token);
-            await _client.StartAsync();
+			await Task.Delay(-1);
+		}
 
-            // Block this task until the program is closed.
-            await Task.Delay(-1);
-
-        }
-    }
+		private async Task MessageUpdated(Cacheable<IMessage, ulong> before, SocketMessage after, ISocketMessageChannel channel)
+		{
+			// If the message was not in the cache, downloading it will result in getting a copy of `after`.
+			var message = await before.GetOrDownloadAsync();
+			Console.WriteLine($"{message} -> {after}");
+		}
+	}
 }
