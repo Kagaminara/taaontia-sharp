@@ -22,13 +22,7 @@ public class LoggingService
 		_client.Log += LogAsync;
 		_commands.Log += LogAsync;
 	}
-	//public LoggingService(DiscordSocketClient client, CommandService command)
-	//{
-	//	client.Log += LogAsync;
-	//	command.Log += LogAsync;
-	//}
 
-	// this method executes on the bot being connected/ready
 	public Task OnReadyAsync()
 	{
 		Console.WriteLine($"Connected as -> [{_client.CurrentUser}] :)");

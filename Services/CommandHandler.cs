@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Discord_Bot.Database;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,14 @@ namespace Discord_Bot.Services
     {
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commands;
+        private readonly IServiceProvider _services;
 
         // Retrieve client and CommandService instance via ctor
         public CommandHandler(IServiceProvider services)
         {
             _client = services.GetRequiredService<DiscordSocketClient>();
             _commands = services.GetRequiredService<CommandService>();
+            _services = services;
         }
 
         public async Task InstallCommandsAsync()
@@ -36,7 +39,7 @@ namespace Discord_Bot.Services
             // If you do not use Dependency Injection, pass null.
             // See Dependency Injection guide for more information.
             await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
-                                            services: null);
+                                            services: _services);
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)
@@ -62,7 +65,7 @@ namespace Discord_Bot.Services
             await _commands.ExecuteAsync(
                 context: context,
                 argPos: argPos,
-                services: null);
+                services: _services);
         }
     }
 }

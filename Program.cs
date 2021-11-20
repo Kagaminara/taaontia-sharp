@@ -2,12 +2,10 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Database;
+using Discord_Bot.Modules;
 using Discord_Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Discord_Bot
@@ -31,6 +29,7 @@ namespace Discord_Bot
 
                 // setup logging and the ready event
                 services.GetRequiredService<LoggingService>();
+
                 await services.GetRequiredService<CommandHandler>().InstallCommandsAsync();
 
 
@@ -60,7 +59,7 @@ namespace Discord_Bot
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()
                 .AddSingleton<LoggingService>()
-                .AddDbContext<CsharpiEntities>();
+                .AddDbContext<DiscordBotEntities>();
 
             var serviceProvider = services.BuildServiceProvider();
             return serviceProvider;
