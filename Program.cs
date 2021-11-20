@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord_Bot.Database;
 using Discord_Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,42 +15,63 @@ namespace Discord_Bot
     public class Program
     {
 
-		private DiscordSocketClient _client;
-		private CommandService _commands;
+        private DiscordSocketClient _client;
 
-		static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
+        static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
-		public async Task MainAsync()
-		{
-			// When working with events that have Cacheable<IMessage, ulong> parameters,
-			// you must enable the message cache in your config settings if you plan to
-			// use the cached message entity. 
-			var _config = new DiscordSocketConfig { MessageCacheSize = 100 };
-			_client = new DiscordSocketClient(_config);
-			_commands = new CommandService();
+        public async Task MainAsync()
+        {
+            using (var services = ConfigureServices())
+            {
+                // When working with events that have Cacheable<IMessage, ulong> parameters,
+                // you must enable the message cache in your config settings if you plan to
+                // use the cached message entity. 
+                var client = services.GetRequiredService<DiscordSocketClient>();
+                _client = client;
 
-			var commandHandler =  new CommandHandler(_client, _commands);
-			await commandHandler.InstallCommandsAsync();
+                // setup logging and the ready event
+                services.GetRequiredService<LoggingService>();
+                await services.GetRequiredService<CommandHandler>().InstallCommandsAsync();
 
-			await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DiscordToken"));
-			await _client.StartAsync();
 
-			_client.MessageUpdated += MessageUpdated;
-			_client.Ready += () =>
-			{
-				Console.WriteLine("Bot is connected!");
-				return Task.CompletedTask;
-			};
-	
+                await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DiscordToken"));
+                await _client.StartAsync();
 
-			await Task.Delay(-1);
-		}
+                _client.MessageUpdated += MessageUpdated;
+                _client.Ready += () =>
+                {
+                    Console.WriteLine("Bot is connected!");
+                    return Task.CompletedTask;
+                };
 
-		private async Task MessageUpdated(Cacheable<IMessage, ulong> before, SocketMessage after, ISocketMessageChannel channel)
-		{
-			// If the message was not in the cache, downloading it will result in getting a copy of `after`.
-			var message = await before.GetOrDownloadAsync();
-			Console.WriteLine($"{message} -> {after}");
-		}
-	}
+
+                await Task.Delay(-1);
+            }
+        }
+
+        private ServiceProvider ConfigureServices()
+        {
+            // this returns a ServiceProvider that is used later to call for those services
+            // we can add types we have access to here, hence adding the new using statement:
+            // using csharpi.Services;
+            // the config we build is also added, which comes in handy for setting the command prefix!
+            var services = new ServiceCollection()
+                .AddSingleton<DiscordSocketClient>()
+                .AddSingleton<CommandService>()
+                .AddSingleton<CommandHandler>()
+                .AddSingleton<LoggingService>()
+                .AddDbContext<CsharpiEntities>();
+
+            var serviceProvider = services.BuildServiceProvider();
+            return serviceProvider;
+        }
+
+
+        private async Task MessageUpdated(Cacheable<IMessage, ulong> before, SocketMessage after, ISocketMessageChannel channel)
+        {
+            // If the message was not in the cache, downloading it will result in getting a copy of `after`.
+            var message = await before.GetOrDownloadAsync();
+            Console.WriteLine($"{message} -> {after}");
+        }
+    }
 }

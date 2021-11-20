@@ -1,17 +1,41 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 public class LoggingService
 {
-	public LoggingService(DiscordSocketClient client, CommandService command)
-	{
-		client.Log += LogAsync;
-		command.Log += LogAsync;
+	private readonly DiscordSocketClient _client;
+	private readonly CommandService _commands;
+
+
+	public LoggingService(IServiceProvider services)
+    {
+		_client = services.GetRequiredService<DiscordSocketClient>();
+		_commands = services.GetRequiredService<CommandService>();
+
+		// hook into these events with the methods provided below
+		_client.Ready += OnReadyAsync;
+		_client.Log += LogAsync;
+		_commands.Log += LogAsync;
 	}
+	//public LoggingService(DiscordSocketClient client, CommandService command)
+	//{
+	//	client.Log += LogAsync;
+	//	command.Log += LogAsync;
+	//}
+
+	// this method executes on the bot being connected/ready
+	public Task OnReadyAsync()
+	{
+		Console.WriteLine($"Connected as -> [{_client.CurrentUser}] :)");
+		Console.WriteLine($"We are on [{_client.Guilds.Count}] servers");
+		return Task.CompletedTask;
+	}
+
 	private Task LogAsync(LogMessage message)
 	{
 		if (message.Exception is CommandException cmdException)

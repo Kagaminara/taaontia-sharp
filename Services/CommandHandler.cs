@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,10 @@ namespace Discord_Bot.Services
         private readonly CommandService _commands;
 
         // Retrieve client and CommandService instance via ctor
-        public CommandHandler(DiscordSocketClient client, CommandService commands)
+        public CommandHandler(IServiceProvider services)
         {
-            _commands = commands;
-            _client = client;
+            _client = services.GetRequiredService<DiscordSocketClient>();
+            _commands = services.GetRequiredService<CommandService>();
         }
 
         public async Task InstallCommandsAsync()
