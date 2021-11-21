@@ -11,14 +11,15 @@ using Discord;
 namespace Discord_Bot.Modules
 {
     [RequireOwner]
+    [Name("Fiend type")]
     [Group("fiendType")]
-    public class FiendType : ModuleBase<SocketCommandContext>
+    public class FiendTypeModule : ModuleBase<SocketCommandContext>
     {
         private readonly DiscordBotEntities _db;
         private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
 
-        public FiendType(IServiceProvider services)
+        public FiendTypeModule(IServiceProvider services)
         {
             _db = services.GetRequiredService<DiscordBotEntities>();
             _client = services.GetRequiredService<DiscordSocketClient>();
@@ -80,38 +81,34 @@ namespace Discord_Bot.Modules
             if (existingFiendCount > 0)
             {
                 await ReplyAsync("A for with this name already exists.");
+                return;
             }
-            else
+            var sb = new StringBuilder();
+            var embed = new EmbedBuilder();
+
+            var result = _db.FiendType.SingleOrDefault(type => type.Id == id);
+            if (result != null)
             {
-                var sb = new StringBuilder();
-                var embed = new EmbedBuilder();
+                result.Name = String.IsNullOrWhiteSpace(fiendType.Name) ? result.Name : fiendType.Name;
+                result.Description = String.IsNullOrWhiteSpace(fiendType.Description) ? result.Description : fiendType.Description;
+                result.BaseHealth = result.BaseHealth > 0 ? result.BaseHealth : fiendType.BaseHealth;
+                result.BaseEnergy = result.BaseEnergy > 0 ? result.BaseEnergy : fiendType.BaseEnergy;
+                await _db.SaveChangesAsync();
 
-                var result = _db.FiendType.SingleOrDefault(type => type.Id == id);
-                if (result != null)
-                {
-                    result.Name = String.IsNullOrWhiteSpace(fiendType.Name) ? result.Name : fiendType.Name;
-                    result.Description = String.IsNullOrWhiteSpace(fiendType.Description) ? result.Description : fiendType.Description;
-                    result.BaseHealth = result.BaseHealth > 0 ? result.BaseHealth : fiendType.BaseHealth;
-                    result.BaseEnergy = result.BaseEnergy > 0 ? result.BaseEnergy : fiendType.BaseEnergy;
-                    await _db.SaveChangesAsync();
+                sb.AppendLine($"{result.Id}: {result.Name}");
+                sb.AppendLine($"Description: {result.Description}");
+                sb.AppendLine($"Base Health: {result.BaseHealth}");
+                sb.AppendLine($"Base Energy: {result.BaseEnergy}");
 
-                    sb.AppendLine($"{result.Id}: {result.Name}");
-                    sb.AppendLine($"Description: {result.Description}");
-                    sb.AppendLine($"Base Health: {result.BaseHealth}");
-                    sb.AppendLine($"Base Energy: {result.BaseEnergy}");
+                embed.Title = "Fiend successfully updated:";
+                embed.Color = new Color(0, 0, 255);
+                embed.Description = sb.ToString();
 
-                    embed.Title = "Fiend successfully updated:";
-                    embed.Color = new Color(0, 0, 255);
-                    embed.Description = sb.ToString();
-
-                    await ReplyAsync(null, false, embed.Build());
-                }
-                else
-                {
-                    await ReplyAsync($"Could not find the fiend with Id {id}.");
-                }
-
+                await ReplyAsync(null, false, embed.Build());
+                return;
             }
+            await ReplyAsync($"Could not find the fiend with Id {id}.");
+
         }
 
         [Command("list")]

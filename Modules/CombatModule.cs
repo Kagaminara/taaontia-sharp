@@ -12,17 +12,16 @@ using System.Text;
 namespace Discord_Bot.Modules
 {
     [Group("fight")]
+    [Name("Fight")]
     [Summary("Combat related commands")]
-    public class Combat : ModuleBase<SocketCommandContext>
+    public class CombatModule : ModuleBase<SocketCommandContext>
     {
         private readonly DiscordBotEntities _db;
-        private readonly DiscordSocketClient _client;
         private readonly CommandService _commandService;
 
-        public Combat(IServiceProvider services)
+        public CombatModule(IServiceProvider services)
         {
             _db = services.GetRequiredService<DiscordBotEntities>();
-            _client = services.GetRequiredService<DiscordSocketClient>();
             _commandService = services.GetRequiredService<CommandService>();
 
         }
