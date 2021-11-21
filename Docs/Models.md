@@ -26,6 +26,19 @@ Describe a fiend.
 - `health - [int]`
 - `mana - [int]`
 - `level - [int]`
+- `fiendType - [FiendType]`
+
+### FiendType
+
+Describe a fiend type / template
+
+#### Fields
+
+- `id - [pk]`
+- `name - [string]`
+- `description - [string]`
+- `baseHealth - [int]`
+- `baseEnergy - [int]`
 
 ## Combat related models
 

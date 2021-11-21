@@ -11,6 +11,7 @@ namespace Discord_Bot.Database
         public int Health { get; set; }
         public int Mana { get; set; }
         public int Level { get; set; }
+        public FiendType FiendType { get; set; }
         public ICollection<Fight> Fights { get; set; }
     }
 }
