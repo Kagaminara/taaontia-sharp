@@ -3,33 +3,20 @@ using System;
 using Discord_Bot.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discord_Bot.Migrations
 {
     [DbContext(typeof(DiscordBotEntities))]
-    partial class DiscordBotEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211121032020_FightAndCharacter")]
+    partial class FightAndCharacter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.12");
-
-            modelBuilder.Entity("CharacterFight", b =>
-                {
-                    b.Property<long>("AlliesId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("FightsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("AlliesId", "FightsId");
-
-                    b.HasIndex("FightsId");
-
-                    b.ToTable("CharacterFight");
-                });
 
             modelBuilder.Entity("Discord_Bot.Database.Character", b =>
                 {
@@ -38,6 +25,9 @@ namespace Discord_Bot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Experience")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("FightId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Health")
@@ -53,6 +43,8 @@ namespace Discord_Bot.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FightId");
 
                     b.ToTable("Character");
                 });
@@ -80,6 +72,9 @@ namespace Discord_Bot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("FightId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Health")
                         .HasColumnType("INTEGER");
 
@@ -93,6 +88,8 @@ namespace Discord_Bot.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FightId");
 
                     b.ToTable("Fiend");
                 });
@@ -136,34 +133,18 @@ namespace Discord_Bot.Migrations
                     b.ToTable("FightEvent");
                 });
 
-            modelBuilder.Entity("FiendFight", b =>
+            modelBuilder.Entity("Discord_Bot.Database.Character", b =>
                 {
-                    b.Property<long>("FiendsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("FightsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("FiendsId", "FightsId");
-
-                    b.HasIndex("FightsId");
-
-                    b.ToTable("FiendFight");
+                    b.HasOne("Discord_Bot.Database.Fight", null)
+                        .WithMany("Allies")
+                        .HasForeignKey("FightId");
                 });
 
-            modelBuilder.Entity("CharacterFight", b =>
+            modelBuilder.Entity("Discord_Bot.Database.Fiend", b =>
                 {
-                    b.HasOne("Discord_Bot.Database.Character", null)
-                        .WithMany()
-                        .HasForeignKey("AlliesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Discord_Bot.Database.Fight", null)
-                        .WithMany()
-                        .HasForeignKey("FightsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Fiends")
+                        .HasForeignKey("FightId");
                 });
 
             modelBuilder.Entity("Discord_Bot.Database.FightEvent", b =>
@@ -175,24 +156,13 @@ namespace Discord_Bot.Migrations
                     b.Navigation("Fight");
                 });
 
-            modelBuilder.Entity("FiendFight", b =>
-                {
-                    b.HasOne("Discord_Bot.Database.Fiend", null)
-                        .WithMany()
-                        .HasForeignKey("FiendsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Discord_Bot.Database.Fight", null)
-                        .WithMany()
-                        .HasForeignKey("FightsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Discord_Bot.Database.Fight", b =>
                 {
+                    b.Navigation("Allies");
+
                     b.Navigation("Events");
+
+                    b.Navigation("Fiends");
                 });
 #pragma warning restore 612, 618
         }

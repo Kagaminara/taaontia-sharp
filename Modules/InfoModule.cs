@@ -15,6 +15,5 @@ namespace Discord_Bot.Services
 		public Task SayAsync([Remainder][Summary("The text to echo")] string echo)
 			=> ReplyAsync(echo);
 
-		// ReplyAsync is a method on ModuleBase 
 	}
 }
