@@ -3,14 +3,16 @@ using System;
 using Discord_Bot.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discord_Bot.Migrations
 {
     [DbContext(typeof(DiscordBotEntities))]
-    partial class DiscordBotEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211121133355_DiscordCharacterFields")]
+    partial class DiscordCharacterFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +45,6 @@ namespace Discord_Bot.Migrations
                     b.Property<ulong>("DiscordId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Energy")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Experience")
                         .HasColumnType("INTEGER");
 
@@ -55,10 +54,7 @@ namespace Discord_Bot.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MaxEnergy")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MaxHealth")
+                    b.Property<int>("Mana")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Username")
@@ -92,9 +88,6 @@ namespace Discord_Bot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Energy")
-                        .HasColumnType("INTEGER");
-
                     b.Property<long?>("FiendTypeId")
                         .HasColumnType("INTEGER");
 
@@ -102,6 +95,9 @@ namespace Discord_Bot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Mana")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")

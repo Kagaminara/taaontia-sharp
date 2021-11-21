@@ -1,11 +1,13 @@
-﻿using Discord.Commands;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Discord.Commands;
 using Discord;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord_Bot.Database;
-using Microsoft.Extensions.DependencyInjection;
 using Discord.WebSocket;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Discord_Bot.Modules
 {
@@ -59,8 +61,66 @@ namespace Discord_Bot.Modules
         [Summary("Engage a new foe !")]
         public async Task EngageTask()
         {
+            Character connectedCharacter = await _db.FindOrCreateConnectedCharacter(Context.User);
+            var currentFight = await _db.GetCurrentCombat(Context.User);
 
-            await ReplyAsync("pouet");
+            if (currentFight != null)
+            {
+                await ReplyAsync("You already are in a fight !");
+                return;
+            }
+
+            var fiendTypes = await _db.FiendType.ToListAsync();
+            var fiendType = fiendTypes[new Random().Next(fiendTypes.Count)];
+
+            var newFiend = new Fiend
+            {
+                FiendType = fiendType,
+                Health = fiendType.BaseHealth,
+                Energy = fiendType.BaseEnergy,
+                Level = 1,
+                Name = fiendType.Name,
+            };
+
+            var fight = new Fight
+            {
+                Allies = new List<Character>() { connectedCharacter },
+                Fiends = new List<Fiend>() { newFiend },
+                IsActive = true,
+                IsGlobal = false,
+            };
+
+            await _db.Fight.AddAsync(fight);
+            await _db.SaveChangesAsync();
+
+            var eb = new EmbedBuilder();
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"Health: {newFiend.Health}");
+            sb.AppendLine($"Energy: {newFiend.Energy}");
+
+            eb.Title = $"A wild {fiendType.Name} appears !";
+            eb.Description = sb.ToString();
+
+            await ReplyAsync(null, false, eb.Build());
+        }
+
+        [Command("flee")]
+        [Summary("Escape from your current fight like the coward you are")]
+        public async Task FleeAsync()
+        {
+            var currentFight = await _db.GetCurrentCombat(Context.User);
+
+            if (currentFight == null)
+            {
+                await ReplyAsync("You are not currently in a fight !");
+                return;
+            }
+
+            currentFight.IsActive = false;
+            await _db.SaveChangesAsync();
+
+            await ReplyAsync("You successfully proved you weren't up for this.");
         }
 
         [Command("attack")]
