@@ -9,6 +9,7 @@ namespace Discord_Bot.Database
             Health = 0,
             Mana,
             Attack,
+            Defend,
         }
 
         [Key]
