@@ -3,14 +3,16 @@ using System;
 using Discord_Bot.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discord_Bot.Migrations
 {
     [DbContext(typeof(DiscordBotEntities))]
-    partial class DiscordBotEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211121175224_EventRefactor")]
+    partial class EventRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,7 +79,7 @@ namespace Discord_Bot.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("Event");
+                    b.ToTable("FightEvent");
                 });
 
             modelBuilder.Entity("Discord_Bot.Database.FiendType", b =>
@@ -136,10 +138,7 @@ namespace Discord_Bot.Migrations
                     b.Property<int>("Health")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MaxEnergy")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MaxHealth")
+                    b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -180,9 +179,11 @@ namespace Discord_Bot.Migrations
                     b.Property<int>("Experience")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Level")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("Character_Level");
+                    b.Property<int>("MaxEnergy")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxHealth")
+                        .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("Character");
                 });
@@ -192,9 +193,6 @@ namespace Discord_Bot.Migrations
                     b.HasBaseType("Discord_Bot.Utils.Actor");
 
                     b.Property<long?>("FiendTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
                     b.HasIndex("FiendTypeId");

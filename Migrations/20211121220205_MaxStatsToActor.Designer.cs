@@ -3,14 +3,16 @@ using System;
 using Discord_Bot.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discord_Bot.Migrations
 {
     [DbContext(typeof(DiscordBotEntities))]
-    partial class DiscordBotEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211121220205_MaxStatsToActor")]
+    partial class MaxStatsToActor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,6 +138,9 @@ namespace Discord_Bot.Migrations
                     b.Property<int>("Health")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("MaxEnergy")
                         .HasColumnType("INTEGER");
 
@@ -180,10 +185,6 @@ namespace Discord_Bot.Migrations
                     b.Property<int>("Experience")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Level")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("Character_Level");
-
                     b.HasDiscriminator().HasValue("Character");
                 });
 
@@ -192,9 +193,6 @@ namespace Discord_Bot.Migrations
                     b.HasBaseType("Discord_Bot.Utils.Actor");
 
                     b.Property<long?>("FiendTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
                     b.HasIndex("FiendTypeId");

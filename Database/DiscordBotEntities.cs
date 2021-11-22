@@ -12,7 +12,7 @@ namespace Discord_Bot.Database
         public virtual DbSet<Fiend> Fiend { get; set; }
         public virtual DbSet<FiendType> FiendType { get; set; }
         public virtual DbSet<Fight> Fight{ get; set; }
-        public virtual DbSet<FightEvent> FightEvent { get; set; }
+        public virtual DbSet<Event> Event { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -29,7 +29,7 @@ namespace Discord_Bot.Database
             {
                 connectedCharacter = new Character
                 {
-                    Username = user.Username,
+                    Name = user.Username,
                     DiscordId = user.Id,
                     DiscordDiscriminator = user.Discriminator,
                     Level = 1,
@@ -46,12 +46,19 @@ namespace Discord_Bot.Database
             return connectedCharacter;
         }
 
-        public async Task<Fight> GetCurrentCombat(SocketUser user, bool global = false)
+        public async Task<Fight> GetCurrentFight(SocketUser user, bool global = false)
         {
             var character = await FindOrCreateConnectedCharacter(user);
 
             return await Fight.SingleOrDefaultAsync(fight => fight.IsActive && fight.IsGlobal == global && fight.Allies.Contains(character));
         }
 
+        public async Task AddEvent(SocketUser user, Event.EEventType type, int value)
+        {
+            await Event.AddAsync(new Event
+            {
+                
+            });
+        }
     }
 }
