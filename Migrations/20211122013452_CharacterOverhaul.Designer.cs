@@ -3,14 +3,16 @@ using System;
 using Discord_Bot.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discord_Bot.Migrations
 {
     [DbContext(typeof(DiscordBotEntities))]
-    partial class DiscordBotEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211122013452_CharacterOverhaul")]
+    partial class CharacterOverhaul
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

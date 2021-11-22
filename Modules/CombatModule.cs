@@ -99,21 +99,24 @@ namespace Discord_Bot.Modules
             var fiendTypes = await _db.FiendType.ToListAsync();
             var fiendType = fiendTypes[new Random().Next(fiendTypes.Count)];
 
-            var newFiend = new Fiend
+            var newFiend = new Character
             {
-                FiendType = fiendType,
                 Health = fiendType.BaseHealth,
                 Energy = fiendType.BaseEnergy,
                 MaxHealth = fiendType.BaseHealth,
                 MaxEnergy = fiendType.BaseEnergy,
                 Level = 1,
                 Name = fiendType.Name,
+                Fiend = new Fiend
+                {
+                    FiendType = fiendType,
+                }
             };
 
             var fight = new Fight
             {
                 Allies = new List<Character>() { connectedCharacter },
-                Fiends = new List<Fiend>() { newFiend },
+                Fiends = new List<Character>() { newFiend },
                 IsActive = true,
                 IsGlobal = false,
             };
@@ -121,7 +124,7 @@ namespace Discord_Bot.Modules
             await _db.Fight.AddAsync(fight);
             await _db.Event.AddAsync(new Event
             {
-                Actor = connectedCharacter,
+                Author = connectedCharacter,
                 Fight = fight,
                 Type = Event.EEventType.Engage,
             });
@@ -155,7 +158,7 @@ namespace Discord_Bot.Modules
             currentFight.IsActive = false;
             await _db.Event.AddAsync(new Event
             {
-                Actor = connectedCharacter,
+                Author = connectedCharacter,
                 Fight = currentFight,
                 Type = Event.EEventType.Flee,
             });
@@ -186,7 +189,7 @@ namespace Discord_Bot.Modules
             currentFight.Fiends.First().Health -= characterDamage;
             await _db.Event.AddAsync(new Event
             {
-                Actor = character,
+                Author = character,
                 Target = ennemy,
                 Value = characterDamage,
                 Fight = currentFight,
@@ -194,7 +197,7 @@ namespace Discord_Bot.Modules
             }); ;
             await _db.Event.AddAsync(new Event
             {
-                Actor = character,
+                Author = character,
                 Target = ennemy,
                 Value = -characterDamage,
                 Fight = currentFight,
@@ -219,7 +222,7 @@ namespace Discord_Bot.Modules
 
             await _db.Event.AddAsync(new Event
             {
-                Actor = ennemy,
+                Author = ennemy,
                 Target = character,
                 Value = fiendDamage,
                 Fight = currentFight,
@@ -227,7 +230,7 @@ namespace Discord_Bot.Modules
             }); ;
             await _db.Event.AddAsync(new Event
             {
-                Actor = ennemy,
+                Author = ennemy,
                 Target = character,
                 Value = -fiendDamage,
                 Fight = currentFight,
@@ -277,7 +280,7 @@ namespace Discord_Bot.Modules
 
             await _db.Event.AddAsync(new Event
             {
-                Actor = character,
+                Author = character,
                 Fight = currentFight,
                 Type = Event.EEventType.Defend,
             });
@@ -287,7 +290,7 @@ namespace Discord_Bot.Modules
 
             await _db.Event.AddAsync(new Event
             {
-                Actor = ennemy,
+                Author = ennemy,
                 Target = character,
                 Value = fiendDamage,
                 Fight = currentFight,
@@ -295,7 +298,7 @@ namespace Discord_Bot.Modules
             }); ;
             await _db.Event.AddAsync(new Event
             {
-                Actor = ennemy,
+                Author = ennemy,
                 Target = character,
                 Value = -fiendDamage,
                 Fight = currentFight,

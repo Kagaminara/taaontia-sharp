@@ -9,6 +9,7 @@ namespace Discord_Bot.Database
     {
         public virtual DbSet<EightBallAnswer> EightBallAnswer { get; set; }
         public virtual DbSet<Character> Character { get; set; }
+        public virtual DbSet<Player> Player { get; set; }
         public virtual DbSet<Fiend> Fiend { get; set; }
         public virtual DbSet<FiendType> FiendType { get; set; }
         public virtual DbSet<Fight> Fight{ get; set; }
@@ -22,22 +23,37 @@ namespace Discord_Bot.Database
             optionsBuilder.UseSqlite(connection);
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Character>()
+                .HasOne(b => b.Fiend)
+                .WithOne(i => i.Character)
+                .HasForeignKey<Fiend>(b => b.CharacterForeignKey);
+            modelBuilder.Entity<Character>()
+                .HasOne(b => b.Player)
+                .WithOne(i => i.Character)
+                .HasForeignKey<Player>(b => b.CharacterForeignKey);
+        }
+
         public async Task<Character> FindOrCreateConnectedCharacter(SocketUser user)
         {
-            Character connectedCharacter = await Character.SingleOrDefaultAsync(character => character.DiscordId == user.Id);
+            Character connectedCharacter = await Character.SingleOrDefaultAsync(character => character.Player.DiscordId == user.Id);
             if (connectedCharacter == null)
             {
                 connectedCharacter = new Character
                 {
                     Name = user.Username,
-                    DiscordId = user.Id,
-                    DiscordDiscriminator = user.Discriminator,
-                    Level = 1,
                     Experience = 0,
+                    Level = 1,
                     MaxHealth = 50,
                     MaxEnergy = 50,
                     Health = 50,
                     Energy = 50,
+                    Player = new Player
+                    {
+                        DiscordId = user.Id,
+                        DiscordDiscriminator = user.Discriminator,
+                    }
                 };
                 await Character.AddAsync(connectedCharacter);
                 await SaveChangesAsync();
@@ -51,14 +67,6 @@ namespace Discord_Bot.Database
             var character = await FindOrCreateConnectedCharacter(user);
 
             return await Fight.SingleOrDefaultAsync(fight => fight.IsActive && fight.IsGlobal == global && fight.Allies.Contains(character));
-        }
-
-        public async Task AddEvent(SocketUser user, Event.EEventType type, int value)
-        {
-            await Event.AddAsync(new Event
-            {
-                
-            });
         }
     }
 }
