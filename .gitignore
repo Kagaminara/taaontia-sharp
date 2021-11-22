@@ -348,4 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/token.txt
+
+# Projet files
+/DiscordBot.db
+/DiscordBot.db-shm
+/DiscordBot.db-wal
