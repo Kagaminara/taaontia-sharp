@@ -5,7 +5,7 @@ using TaaontiaCore.Services;
 
 namespace TaaontiaCore
 {
-    public class TaaontiaCore : ITaaontiaCore
+    public class TaaontiaCore
     {
         private readonly ServiceProvider _services;
 
@@ -13,6 +13,7 @@ namespace TaaontiaCore
         {
             _services = ConfigureServices();
 
+            var game = _services.GetRequiredService<GameService>();
 
         }
 
@@ -20,15 +21,11 @@ namespace TaaontiaCore
         {
             var services = new ServiceCollection()
                 .AddSingleton<LoggingService>()
+                .AddSingleton<GameService>()
                 .AddDbContext<TaaontiaEntities>();
 
             var serviceProvider = services.BuildServiceProvider();
             return serviceProvider;
-        }
-
-        public void SayHello()
-        {
-            Console.Write("Hello");
         }
     }
 }
