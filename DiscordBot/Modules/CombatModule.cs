@@ -97,6 +97,11 @@ namespace Discord_Bot.Modules
             }
 
             var fiendTypes = await _db.FiendType.ToListAsync();
+            if (fiendTypes.Count == 0)
+            {
+                await ReplyAsync("There is no fiend to fight !\nUse the !fiendType add command to add some.");
+                return;
+            }
             var fiendType = fiendTypes[new Random().Next(fiendTypes.Count)];
 
             var newFiend = new Character

@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Database;
-using Discord_Bot.Modules;
 using Discord_Bot.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,6 +13,7 @@ namespace Discord_Bot
     {
 
         private DiscordSocketClient _client;
+        private TaaontiaCore.TaaontiaCore _taaontia;
 
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
@@ -32,6 +32,7 @@ namespace Discord_Bot
 
                 await services.GetRequiredService<CommandHandler>().InstallCommandsAsync();
 
+                _taaontia = services.GetRequiredService<TaaontiaCore.TaaontiaCore>();
 
                 await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DiscordToken"));
                 await _client.StartAsync();
@@ -59,6 +60,7 @@ namespace Discord_Bot
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()
                 .AddSingleton<LoggingService>()
+                .AddSingleton<TaaontiaCore.TaaontiaCore>()
                 .AddDbContext<DiscordBotEntities>();
 
             var serviceProvider = services.BuildServiceProvider();
