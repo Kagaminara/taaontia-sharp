@@ -354,3 +354,4 @@ MigrationBackup/
 /DiscordBot.db-shm
 /DiscordBot.db-wal
 /DiscordBot/config.json
+/TaaontiaCore/DiscordBot.db
