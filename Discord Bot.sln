@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord Bot", "Discord Bot.csproj", "{0ABFFE85-E5B1-4779-A759-F719851B3EAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord Bot", "DiscordBot\Discord Bot.csproj", "{0ABFFE85-E5B1-4779-A759-F719851B3EAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaaontiaCore", "..\TaaontiaCore\TaaontiaCore.csproj", "{E7474CD1-5BFE-439A-992D-A5D26DDB57C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaaontiaCore", "..\TaaontiaCore\TaaontiaCore.csproj", "{E7474CD1-5BFE-439A-992D-A5D26DDB57C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

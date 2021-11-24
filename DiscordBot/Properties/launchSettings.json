@@ -2,10 +2,7 @@
   "profiles": {
     "Discord Bot": {
       "commandName": "Project",
-      "workingDirectory": "C:\\Users\\Shikatsu\\Documents\\Repos\\taaontia-sharp",
-      "environmentVariables": {
-        "DiscordToken": "MjU5NjI3MDQwMTYyOTcxNjQ5.WFUShg.9lM83JdsDQ1VN8adbYMfr5qBCR4"
-      }
+      "workingDirectory": "C:\\Users\\Shikatsu\\Documents\\Repos\\taaontia-sharp"
     }
   }
 }
