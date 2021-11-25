@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace TaaontiaCore.Database
+namespace TaaontiaCore.Database.Models
 {
     public class Fight
     {
         [Key]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public ICollection<Character> Allies { get; set; }
         public ICollection<Character> Fiends { get; set; }
         public ICollection<Event> Events { get; set; }

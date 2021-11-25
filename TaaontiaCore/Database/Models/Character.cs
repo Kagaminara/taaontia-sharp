@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace TaaontiaCore.Database
+namespace TaaontiaCore.Database.Models
 {
     public class Character
     {
         [Key]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
@@ -13,6 +15,7 @@ namespace TaaontiaCore.Database
         public int MaxEnergy { get; set; }
         public int Level { get; set; }
         public int Experience { get; set; }
+        public ICollection<Skill> Skills { get; set; }
         public Player Player { get; set; }
         public Fiend Fiend { get; set; }
     }
