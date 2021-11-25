@@ -1,30 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TaaontiaCore.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "EightBallAnswer",
-                columns: table => new
-                {
-                    AnswerId = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AnswerText = table.Column<string>(type: "TEXT", nullable: true),
-                    AnswerColor = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EightBallAnswer", x => x.AnswerId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FiendType",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table.Column<uint>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
@@ -37,14 +24,59 @@ namespace TaaontiaCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StatusType",
+                columns: table => new
+                {
+                    Id = table.Column<uint>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Effect = table.Column<int>(type: "INTEGER", nullable: false),
+                    BaseValue = table.Column<int>(type: "INTEGER", nullable: false),
+                    Duration = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StatusType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Skill",
+                columns: table => new
+                {
+                    Id = table.Column<uint>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    BaseSourceDamage = table.Column<int>(type: "INTEGER", nullable: false),
+                    BaseTargetDamage = table.Column<int>(type: "INTEGER", nullable: false),
+                    SourceStatusId = table.Column<uint>(type: "INTEGER", nullable: true),
+                    TargetStatusId = table.Column<uint>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skill", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Skill_StatusType_SourceStatusId",
+                        column: x => x.SourceStatusId,
+                        principalTable: "StatusType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Skill_StatusType_TargetStatusId",
+                        column: x => x.TargetStatusId,
+                        principalTable: "StatusType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Event",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FightId = table.Column<long>(type: "INTEGER", nullable: true),
-                    AuthorId = table.Column<long>(type: "INTEGER", nullable: true),
-                    TargetId = table.Column<long>(type: "INTEGER", nullable: true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FightId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    SourceIdId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    TargetId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Type = table.Column<int>(type: "INTEGER", nullable: false),
                     Value = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -57,10 +89,9 @@ namespace TaaontiaCore.Migrations
                 name: "Fiend",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CharacterForeignKey = table.Column<long>(type: "INTEGER", nullable: false),
-                    FiendTypeId = table.Column<long>(type: "INTEGER", nullable: true)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CharacterForeignKey = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FiendTypeId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -77,9 +108,8 @@ namespace TaaontiaCore.Migrations
                 name: "Player",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CharacterForeignKey = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CharacterForeignKey = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,12 +120,11 @@ namespace TaaontiaCore.Migrations
                 name: "Fight",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsGlobal = table.Column<bool>(type: "INTEGER", nullable: false),
-                    FiendId = table.Column<long>(type: "INTEGER", nullable: true),
-                    PlayerId = table.Column<long>(type: "INTEGER", nullable: true)
+                    FiendId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    PlayerId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,8 +147,7 @@ namespace TaaontiaCore.Migrations
                 name: "Character",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Health = table.Column<int>(type: "INTEGER", nullable: false),
                     MaxHealth = table.Column<int>(type: "INTEGER", nullable: false),
@@ -127,8 +155,8 @@ namespace TaaontiaCore.Migrations
                     MaxEnergy = table.Column<int>(type: "INTEGER", nullable: false),
                     Level = table.Column<int>(type: "INTEGER", nullable: false),
                     Experience = table.Column<int>(type: "INTEGER", nullable: false),
-                    FightId = table.Column<long>(type: "INTEGER", nullable: true),
-                    FightId1 = table.Column<long>(type: "INTEGER", nullable: true)
+                    FightId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    FightId1 = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -147,6 +175,39 @@ namespace TaaontiaCore.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Status",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    StatusTypeId = table.Column<uint>(type: "INTEGER", nullable: true),
+                    SourceId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    TargetId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    RemainingDuration = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Status", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Status_Character_SourceId",
+                        column: x => x.SourceId,
+                        principalTable: "Character",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Status_Character_TargetId",
+                        column: x => x.TargetId,
+                        principalTable: "Character",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Status_StatusType_StatusTypeId",
+                        column: x => x.StatusTypeId,
+                        principalTable: "StatusType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Character_FightId",
                 table: "Character",
@@ -158,14 +219,14 @@ namespace TaaontiaCore.Migrations
                 column: "FightId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_AuthorId",
-                table: "Event",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Event_FightId",
                 table: "Event",
                 column: "FightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Event_SourceIdId",
+                table: "Event",
+                column: "SourceIdId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Event_TargetId",
@@ -199,10 +260,35 @@ namespace TaaontiaCore.Migrations
                 column: "CharacterForeignKey",
                 unique: true);
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Skill_SourceStatusId",
+                table: "Skill",
+                column: "SourceStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Skill_TargetStatusId",
+                table: "Skill",
+                column: "TargetStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Status_SourceId",
+                table: "Status",
+                column: "SourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Status_StatusTypeId",
+                table: "Status",
+                column: "StatusTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Status_TargetId",
+                table: "Status",
+                column: "TargetId");
+
             migrationBuilder.AddForeignKey(
-                name: "FK_Event_Character_AuthorId",
+                name: "FK_Event_Character_SourceIdId",
                 table: "Event",
-                column: "AuthorId",
+                column: "SourceIdId",
                 principalTable: "Character",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
@@ -251,10 +337,16 @@ namespace TaaontiaCore.Migrations
                 table: "Character");
 
             migrationBuilder.DropTable(
-                name: "EightBallAnswer");
+                name: "Event");
 
             migrationBuilder.DropTable(
-                name: "Event");
+                name: "Skill");
+
+            migrationBuilder.DropTable(
+                name: "Status");
+
+            migrationBuilder.DropTable(
+                name: "StatusType");
 
             migrationBuilder.DropTable(
                 name: "Fight");

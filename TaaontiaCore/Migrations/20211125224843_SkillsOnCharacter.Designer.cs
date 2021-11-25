@@ -2,34 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaaontiaCore.Database;
 
 namespace TaaontiaCore.Migrations
 {
     [DbContext(typeof(TaaontiaEntities))]
-    partial class TaaontiaEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211125224843_SkillsOnCharacter")]
+    partial class SkillsOnCharacter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.12");
-
-            modelBuilder.Entity("CharacterSkill", b =>
-                {
-                    b.Property<Guid>("CharactersId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<uint>("SkillsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CharactersId", "SkillsId");
-
-                    b.HasIndex("SkillsId");
-
-                    b.ToTable("CharacterSkill");
-                });
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Character", b =>
                 {
@@ -206,6 +193,9 @@ namespace TaaontiaCore.Migrations
                     b.Property<int>("BaseTargetDamage")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid?>("CharacterId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -216,6 +206,8 @@ namespace TaaontiaCore.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
 
                     b.HasIndex("SourceStatusId");
 
@@ -277,21 +269,6 @@ namespace TaaontiaCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StatusType");
-                });
-
-            modelBuilder.Entity("CharacterSkill", b =>
-                {
-                    b.HasOne("TaaontiaCore.Database.Models.Character", null)
-                        .WithMany()
-                        .HasForeignKey("CharactersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TaaontiaCore.Database.Models.Skill", null)
-                        .WithMany()
-                        .HasForeignKey("SkillsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Character", b =>
@@ -367,6 +344,10 @@ namespace TaaontiaCore.Migrations
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Skill", b =>
                 {
+                    b.HasOne("TaaontiaCore.Database.Models.Character", null)
+                        .WithMany("Skills")
+                        .HasForeignKey("CharacterId");
+
                     b.HasOne("TaaontiaCore.Database.Models.StatusType", "SourceStatus")
                         .WithMany()
                         .HasForeignKey("SourceStatusId");
@@ -406,6 +387,8 @@ namespace TaaontiaCore.Migrations
                     b.Navigation("Fiend");
 
                     b.Navigation("Player");
+
+                    b.Navigation("Skills");
                 });
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Fiend", b =>
