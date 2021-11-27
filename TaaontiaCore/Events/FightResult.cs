@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaaontiaCore.Enums;
 
-namespace TaaontiaCore.Events.Fight
+namespace TaaontiaCore.Events
 {
-    public enum EFightResult
-    {
-        SUCCESS = 0,
-        FAILURE,
-        ERROR,
-    }
     public class FightResult
     {
         public EFightResult Result;
