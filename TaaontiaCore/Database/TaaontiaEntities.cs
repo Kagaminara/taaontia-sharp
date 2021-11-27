@@ -19,7 +19,7 @@ namespace TaaontiaCore.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "DiscordBot.db" };
+            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "Taaontia.db" };
             var connectionString = connectionStringBuilder.ToString();
             var connection = new SqliteConnection(connectionString);
             optionsBuilder.UseSqlite(connection);
