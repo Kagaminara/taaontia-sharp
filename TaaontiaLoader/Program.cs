@@ -21,11 +21,8 @@ namespace TaaontiaLoader
             }
         }
 
-        static void Main(string[] args)
+        static private void ShowResults(LoadResult results)
         {
-            CheckParam(args);
-            var services = ConfigureServices();
-            var results = services.GetRequiredService<TaaontiaLoader>().Load(FILE_NAME);
             var sb = new StringBuilder();
             sb.AppendLine("-- Load completed --");
             if (results.LoadedStatuses > 0 || results.LoadedSkills > 0)
@@ -53,6 +50,14 @@ namespace TaaontiaLoader
                 }
             }
             Console.WriteLine(sb.ToString());
+        }
+
+        static void Main(string[] args)
+        {
+            CheckParam(args);
+            var services = ConfigureServices();
+            var results = services.GetRequiredService<TaaontiaLoader>().Load(FILE_NAME);
+            ShowResults(results);
         }
 
         static private ServiceProvider ConfigureServices()
