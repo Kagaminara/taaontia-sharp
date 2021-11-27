@@ -18,17 +18,17 @@ namespace TaaontiaCore.Services
 
         public FightResult Engage()
         {
-
+            return new FightResult();
         }
 
         public FightResult Flee()
         {
-
+            return new FightResult();
         }
 
         public FightResult Action(FightEvent e)
         {
-
+            return new FightResult();
         }
     }
 }
