@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TaaontiaLoader": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Shikatsu\\Documents\\Repos\\taaontia-sharp\\TaaontiaCore"
+    }
+  }
+}

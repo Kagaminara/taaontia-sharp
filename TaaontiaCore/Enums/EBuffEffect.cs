@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace TaaontiaCore.Enums
 {
+    [Flags]
     public enum EBuffEffect
     {
-        Damage = 0,
-        Heal,
-        PhysicalArmor,
-        MagicArmor,
+        None = 0,
+        Damage = 1,
+        Heal = 2,
+        PhysicalArmor = 4,
+        MagicArmor = 8,
     }
 
 }
