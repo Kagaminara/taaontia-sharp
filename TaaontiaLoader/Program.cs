@@ -40,14 +40,14 @@ namespace TaaontiaLoader
                     sb.AppendLine($"  {results.LoadedSkills} skills");
                 }
             }
-            if (results.LoadedStatuses > 0 || results.LoadedSkills > 0)
+            if (results.FailedStatuses > 0 || results.FailedSkills > 0)
             {
                 sb.AppendLine("Failed to load :");
                 if (results.FailedStatuses > 0)
                 {
                     sb.AppendLine($"  {results.FailedStatuses} statuses");
                 }
-                if (results.LoadedSkills > 0)
+                if (results.FailedSkills > 0)
                 {
                     sb.AppendLine($"  {results.FailedSkills} skills");
                 }

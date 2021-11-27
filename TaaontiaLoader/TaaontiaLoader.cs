@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,22 +13,6 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace TaaontiaLoader
 {
-    public class Address
-    {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
-    }
-    public class Person
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public float HeightInInches { get; set; }
-        public Dictionary<string, Address> Addresses { get; set; }
-
-    }
-
     public class LoadResult
     {
         public uint LoadedSkills { get; set; } = 0;
@@ -143,9 +129,18 @@ namespace TaaontiaLoader
 
                 LoadResult result = new LoadResult();
                 IntegrityCheck(ref data, ref result);
-                result.LoadedSkills = (uint)data.Skills.Count;
-                result.LoadedStatuses = (uint)data.Statuses.Count;
-                DatabaseUpdate(ref data, ref result);
+                try
+                {
+                    DatabaseUpdate(ref data, ref result);
+                    result.LoadedSkills = (uint)data.Skills.Count;
+                    result.LoadedStatuses = (uint)data.Statuses.Count;
+                }
+                catch (DbUpdateException e)
+                {
+                    Console.WriteLine(e.InnerException.Message);
+                    result.FailedSkills += (uint)data.Skills.Count;
+                    result.FailedStatuses += (uint)data.Statuses.Count;
+                }
                 return result;
             }
         }
