@@ -15,19 +15,5 @@ namespace TaaontiaCore.Services
             _db = services.GetRequiredService<TaaontiaEntities>();
             _logging = services.GetRequiredService<LoggingService>();
         }
-
-        public FightResult HandleFight(FightEvent fightEvent)
-        {
-            return new FightResult
-            {
-                Result = EFightResult.SUCCESS,
-
-            };
-        }
-
-        public void SayBye()
-        {
-            _logging.Log("poeut");
-        }
     }
 }
