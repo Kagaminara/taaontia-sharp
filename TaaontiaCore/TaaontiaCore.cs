@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TaaontiaCore.Database;
-using TaaontiaCore.Events.Fight;
 using TaaontiaCore.Services;
 
 namespace TaaontiaCore
@@ -10,11 +9,15 @@ namespace TaaontiaCore
         private readonly ServiceProvider _services;
         private readonly GameService _game;
 
+        private readonly FightService _fight;
+        public FightService Fight => _fight;
+
         public TaaontiaCore()
         {
             _services = ConfigureServices();
 
             _game = _services.GetRequiredService<GameService>();
+            _fight = _services.GetRequiredService<FightService>();
         }
 
         private ServiceProvider ConfigureServices()
@@ -22,15 +25,11 @@ namespace TaaontiaCore
             var services = new ServiceCollection()
                 .AddSingleton<LoggingService>()
                 .AddSingleton<GameService>()
+                .AddSingleton<FightService>()
                 .AddDbContext<TaaontiaEntities>();
 
             var serviceProvider = services.BuildServiceProvider();
             return serviceProvider;
-        }
-
-        public FightResult Fight(FightEvent fightEvent)
-        {
-            return _game.HandleFight(fightEvent);
         }
     }
 }
