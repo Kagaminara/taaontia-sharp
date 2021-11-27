@@ -1,0 +1,17 @@
+﻿skills:
+  - id: 1
+    name: "Attack"
+    description: "Attack with your weapon"
+    base_target_damage: 5
+  - id: 2
+    name: "Defensive stance"
+    source_status: 1
+    
+
+statuses:
+  - id: 1
+    name: "Defensive stance"
+    description: "Take a defensive stance"
+    effect: 4
+    base_value: 5
+    duration: 2
