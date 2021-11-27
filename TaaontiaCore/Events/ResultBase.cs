@@ -1,6 +1,6 @@
 ﻿namespace TaaontiaCore.Events
 {
-    public abstract class EventBase
+    public abstract class ResultBase
     {
     }
 }
