@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaaontiaCore.Database;
 
 namespace TaaontiaCore.Migrations
 {
     [DbContext(typeof(TaaontiaEntities))]
-    partial class TaaontiaEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20211127001624_SkillAndStatusType")]
+    partial class SkillAndStatusType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,10 +202,10 @@ namespace TaaontiaCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BaseSourceDamage")
+                    b.Property<int>("BaseSourceDamage")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BaseTargetDamage")
+                    b.Property<int>("BaseTargetDamage")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
@@ -262,16 +264,16 @@ namespace TaaontiaCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BaseValue")
+                    b.Property<int>("BaseValue")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("Duration")
+                    b.Property<int>("Duration")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Effect")
+                    b.Property<int>("Effect")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
