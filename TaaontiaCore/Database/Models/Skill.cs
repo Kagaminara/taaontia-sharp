@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,16 +12,16 @@ namespace TaaontiaCore.Database.Models
         public string Name { get; set; }
         public string Description { get; set; }
         // TODO : Add "BaseDeviation" to provide some reduceable randomness
-        public int? BaseSourceDamage { get; set; }
-        public int? BaseTargetDamage { get; set; }
+        public Nullable<int> BaseSourceDamage { get; set; }
+        public Nullable<int> BaseTargetDamage { get; set; }
         /// <summary>
         /// Optional. Some skill can also trigger a Status
         /// </summary>
-        public StatusType? SourceStatus { get; set; }
+        public StatusType SourceStatus { get; set; }
         /// <summary>
         /// Optional. Some skill can also trigger a Status
         /// </summary>
-        public StatusType? TargetStatus { get; set; }
-        public ICollection<Character>? Characters { get; set; }
+        public StatusType TargetStatus { get; set; }
+        public ICollection<Character> Characters { get; set; }
     }
 }
