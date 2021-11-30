@@ -2,5 +2,6 @@
 {
     public abstract class EventBase
     {
+        public ulong RemoteId;
     }
 }

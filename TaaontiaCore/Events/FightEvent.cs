@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace TaaontiaCore.Events
 {
-    public class FightEvent
+    public class NewFightEvent : EventBase
     {
-        public Guid SkillId;
-        public Guid SourceId;
-        public Guid TargetId;
+
+    }
+
+    public class FightEvent : EventBase
+    {
+        public ulong SkillId;
+        public ulong SourceId;
+        public ulong TargetId;
     }
 }

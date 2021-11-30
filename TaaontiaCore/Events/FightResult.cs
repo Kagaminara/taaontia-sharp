@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TaaontiaCore.Database.Models;
 using TaaontiaCore.Enums;
 
 namespace TaaontiaCore.Events
 {
-    public class FightResult
+    public class FightResult : ResultBase
     {
-        public EFightResult Result;
-        public int DamageValue;
+        public EFightError? Error;
+        public Fight Fight;
+        public int? SourceDamage;
+        public int? TargerDamage;
+        public Status SourceStatus;
+        public Status TargetStatus;
+
     }
 }
