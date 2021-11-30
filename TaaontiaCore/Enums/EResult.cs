@@ -1,6 +1,6 @@
 ﻿namespace TaaontiaCore.Enums
 {
-    public enum EFightResult
+    public enum EResult
     {
         SUCCESS = 0,
         FAILURE,
