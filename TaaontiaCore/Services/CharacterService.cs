@@ -64,6 +64,13 @@ namespace TaaontiaCore.Services
                 Player = new Player
                 {
                     RemoteId = newCharacter.RemoteId,
+                },
+                Skills = new List<Skill>
+                {
+                    // Skills by default, mainly for the alpha phase.
+                    // Later to be replaced by a skill selection by the client at character creation
+                    _db.Skill.First(skill => skill.Id == 1),
+                    _db.Skill.First(skill => skill.Id == 2)
                 }
             };
             await _db.Character.AddAsync(character);
