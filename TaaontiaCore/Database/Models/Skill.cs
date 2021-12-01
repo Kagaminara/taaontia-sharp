@@ -23,5 +23,6 @@ namespace TaaontiaCore.Database.Models
         /// </summary>
         public StatusType TargetStatus { get; set; }
         public ICollection<Character> Characters { get; set; }
+        public ICollection<FiendType> FiendTypes { get; set; }
     }
 }
