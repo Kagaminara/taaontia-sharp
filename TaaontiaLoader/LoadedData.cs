@@ -10,6 +10,6 @@ namespace TaaontiaLoader
     {
         public ICollection<LoadedSkill> Skills { get; set; }
         public ICollection<LoadedStatus> Statuses { get; set; }
-
+        public ICollection<LoadedFiendTypes> FiendTypes { get; set; }
     }
 }

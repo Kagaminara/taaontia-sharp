@@ -5,13 +5,176 @@
     base_target_damage: 5
   - id: 2
     name: "Defensive stance"
+    description: "Take a defensive stance"
     source_status: 1
     
 
 statuses:
   - id: 1
     name: "Defensive stance"
-    description: "Take a defensive stance"
+    description: "You are adopting a defensive stance, increasing your damage resistance"
     effect: 4
     base_value: 5
     duration: 2
+
+
+fiend_types:
+  - id: 1
+    name: "The Phirputnin"
+    description: "A tiny flying animal that lives in arid wastelands. Its diet consists mostly of grass. It has a yellow head with spikes on a segmented body with two wings and four legs. Its skin is green.It is known for taking good care of its offspring and it lives in simple hives."
+    base_health: 14
+    base_energy: 19
+    skills:
+      - 1
+
+  - id: 2
+    name: "The Herlax"
+    description: "This creature is a massive climbing animal that lives on the seashore. Its diet consists of fruits and leaves. It has a heavy teal head with many eyes and a long beak protruding from a thin dark body with two skinny legs. Its skin is dark and thick.It can be dangerous."
+    base_health: 19
+    base_energy: 8
+    skills:
+      - 1
+
+  - id: 3
+    name: "The Squuypat"
+    description: "A hideous swimming animal that lives in the deep sea. It eats rotten fish. It has a face with no apparent features resting on a bulky white body with eight fins. Its skin is white and rather thin.It nests in elaborate shelters."
+    base_health: 17
+    base_energy: 7
+    skills:
+      - 1
+
+  - id: 4
+    name: "The Jipnorax"
+    description: "A bizarre striding animal that lives in caves. Its diet consists mainly of leaves, grass, and when available, tree sap. It has a large head with slanted pale eyes, a massive beak with teeth and wispy tendrils hanging from a sturdy body with two tentacles. Its skin is black with orange accents and smooth.It molts every few years; it can be exceptionally dangerous, and it possesses a somewhat confusing caste system."
+    base_health: 19
+    base_energy: 16
+    skills:
+      - 1
+
+  - id: 5
+    name: "The Squawweocox"
+    description: "This creature is a cute floating animal that lives in icy waters. It eats fish, rotten fish, and occasionally, coral. It has a translucent rough head with one single eye and a protruding mouth embedded in a short, muscular bright blue and teal body with no legs. Its skin is bright blue with dark accents and somewhat thin.It prefers dark places; it is often seen basking in the sunlight, and it is bioluminescent."
+    base_health: 20
+    base_energy: 7
+    skills:
+      - 1
+
+  - id: 6
+    name: "The Thybarrop"
+    description: "The thybarrop is a tiny flying animal that lives in plains. It eats rotten meat. It has a black head with protruding eyes and thorns stretching above a long, misshapen yellow body with two bat wings. Its skin is yellow.It grows a new skin every few months and its young are called thybarroplets."
+    base_health: 6
+    base_energy: 5
+    skills:
+      - 1
+
+  - id: 7
+    name: "The Cheres"
+    description: "The cheres is a small swimming animal that lives around an island. It eats worms, coral, and occasionally, jellyfish. It has a smooth face with one gigantic dark eye and complicated mouth parts embedded in a segmented mauve body with four tiny fins. Its skin is mauve.It has an exceptionally high-pitched scream; it only comes out during the day, and it is known to hibernate in the cold season."
+    base_health: 7
+    base_energy: 16
+    skills:
+      - 1
+
+  - id: 8
+    name: "The Sel"
+    description: "The sel is a very small swimming animal that lives in rivers. Its diet consists mostly of rotten fish and plankton. It has a dark face with thorns stretching above a sturdy body with four short fins. Its skin is dark blue and covered in fur.It has been known to eat its offspring; it regrows its limbs often, and it is a slow swimmer."
+    base_health: 9
+    base_energy: 18
+    skills:
+      - 1
+
+  - id: 9
+    name: "The Mulmaton"
+    description: "A somewhat strange crawling animal that lives in boreal forests. Its diet consists entirely of small animals and leaves. It has a pink fleshy head with wispy tendrils connected to a curvy, bulky green body with four claws. Its skin is green.It is an exceptionally unusual sight in swamps."
+    base_health: 15
+    base_energy: 5
+    skills:
+      - 1
+
+  - id: 10
+    name: "The Tat"
+    description: "A small walking animal that lives in swamps. It eats fruits and insects. It has a mauve face with dark blue glowing eyes and a complicated mouth connected to a sickly body with two long legs. Its skin is orange.It lives in flocks."
+    base_health: 5
+    base_energy: 9
+    skills:
+      - 1
+
+  - id: 11
+    name: "The Quohallot"
+    description: "The quohallot is a cute crawling animal that lives in icy waters. It eats rotten fish. It has a wrinkled face with empty eyes and a mouth full of teeth protruding from a curvy, muscular body with no legs. Its skin is white with pale areas and rubbery.It mates for life."
+    base_health: 11
+    base_energy: 9
+    skills:
+      - 1
+
+  - id: 12
+    name: "The Joop"
+    description: "The joop is an alien-looking swimming animal that lives around an archipelago. Its diet consists mainly of fish, plankton, and sometimes, jellyfish. It has a large head with huge green eyes, a proboscis and floppy ears on a curvy, thin white and yellow body with four fins. Its skin is white.Its bite is highly deadly and it is very widespread."
+    base_health: 12
+    base_energy: 9
+    skills:
+      - 1
+
+  - id: 13
+    name: "The Ctuvvate"
+    description: "This creature is a strange swimming animal that lives on the ocean floor. Its diet consists mainly of algae, plankton, and whenever possible, fish. It has a hairy face with protruding eyes embedded in a muscular green and blue body with two short fins. Its skin is green.It is mostly peaceful."
+    base_health: 6
+    base_energy: 9
+    skills:
+      - 1
+
+  - id: 14
+    name: "The Ugox"
+    description: "A plant-like flying animal that lives in the taiga. It eats rotten meat, insects, and every once in a while, fruits. It has a fleshy face with compound eyes, a porous membrane for a mouth and protrusions resting on a muscular brown and gray body with ten slender butterfly wings and four tentacles. Its skin is brown with white hints.It can expel its internal organs to confuse attackers and it is relatively social."
+    base_health: 8
+    base_energy: 15
+    skills:
+      - 1
+
+  - id: 15
+    name: "The Dachlos"
+    description: "A huge slithering animal that lives in mountains. It feeds on leaves. It has a face with a mouth full of long sharp teeth stretching above a skinny flesh-colored body with no legs. Its skin is flesh-colored.It is known to hibernate in the cold season. It has a symbiotic relationship with the zrelbuphoid, and it can slither at exceptional speeds when threatened. It is rather venomous."
+    base_health: 7
+    base_energy: 19
+    skills:
+      - 1
+
+  - id: 16
+    name: "The Seglos"
+    description: "This creature is a beautiful burrowing animal that lives in tunnels in mountains. It feeds on mushrooms, insects, and sometimes, worms. It has a heavy scaly face with antennae and a peaceful smile protruding from a long, muscular pink body with no legs. Its skin is pink and covered in fur.It grows a new skin every few years; it is impressively venomous, and few creatures enjoy eating seglos quite like chickorsopes."
+    base_health: 11
+    base_energy: 11
+    skills:
+      - 1
+
+  - id: 17
+    name: "The Chlavate"
+    description: "The chlavate is a large climbing animal that lives in boreal forests. Its diet consists mostly of worms and fruits. It has a thin blue head with horns embedded in a long, twisted tan and dark blue body with two legs. Its skin is tan with bright blue stripes and padded.It resides in elaborate shelters."
+    base_health: 16
+    base_energy: 12
+    skills:
+      - 1
+
+  - id: 18
+    name: "The Thunormin"
+    description: "The thunormin is a majestic walking animal that lives in swamps. Its diet consists mainly of fruits. It has a heavy flesh-colored bald head with a peaceful smile resting on a thin white and pale body with four thick claws. Its skin is white.It has a rather high-pitched scream. Its predators include the woid, the trafope and the ebrel, and it can expel its internal organs to confuse attackers. It can be dangerous."
+    base_health: 5
+    base_energy: 16
+    skills:
+      - 1
+
+  - id: 19
+    name: "The Seroth"
+    description: "The seroth is an exceptionally peculiar slithering animal that lives around an island. It feeds on jellyfish and plankton. It has a smooth face with compound eyes and a large beak resting on a long, segmented pale body with no legs. Its skin is pale and slimy.It lives in large colonies; its young are called serothlets, and it displays an extremely unique communication system."
+    base_health: 8
+    base_energy: 7
+    skills:
+      - 1
+
+  - id: 20
+    name: "The Opnakore"
+    description: "A strange slithering animal that lives in freshwater. Its diet consists of coral and worms. It has a fleshy face with a porous membrane for a mouth and long ears connected to a segmented body with no legs. Its skin is flesh-colored.Its predators include the cuximor, the traedan and the uleffovnark and it is part of many traditional recipes."
+    base_health: 16
+    base_energy: 10
+    skills:
+      - 1

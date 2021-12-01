@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Discord_Bot.Database;
 using Discord_Bot.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
@@ -11,11 +12,22 @@ namespace Discord_Bot
 {
     public class Program
     {
-
+        private readonly IConfiguration _config;
         private DiscordSocketClient _client;
         private TaaontiaCore.TaaontiaCore _taaontia;
 
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
+
+        public Program()
+        {
+            // create the configuration
+            var _builder = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile(path: "config.json");
+
+            // build the configuration and assign to _config          
+            _config = _builder.Build();
+        }
 
         public async Task MainAsync()
         {
@@ -34,7 +46,7 @@ namespace Discord_Bot
 
                 _taaontia = services.GetRequiredService<TaaontiaCore.TaaontiaCore>();
 
-                await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DiscordToken"));
+                await client.LoginAsync(TokenType.Bot, _config["token"]);
                 await _client.StartAsync();
 
                 _client.MessageUpdated += MessageUpdated;
@@ -56,6 +68,7 @@ namespace Discord_Bot
             // using csharpi.Services;
             // the config we build is also added, which comes in handy for setting the command prefix!
             var services = new ServiceCollection()
+                .AddSingleton(_config)
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()

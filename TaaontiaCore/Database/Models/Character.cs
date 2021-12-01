@@ -18,5 +18,22 @@ namespace TaaontiaCore.Database.Models
         public ICollection<Skill> Skills { get; set; }
         public Player Player { get; set; }
         public Fiend Fiend { get; set; }
+
+        public Character()
+        {
+            Experience = 0;
+            Level = 1;
+            Health = MaxHealth = 10;
+            Energy = MaxEnergy = 10;
+        }
+        public Character(FiendType fiendType) : base()
+        {
+            if (fiendType != null)
+            {
+                Name = fiendType.Name;
+                Health = MaxHealth = fiendType.BaseHealth;
+                Energy = MaxEnergy = fiendType.BaseEnergy;
+            }
+        }
     }
 }
