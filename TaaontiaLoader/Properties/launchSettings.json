@@ -2,6 +2,7 @@
   "profiles": {
     "TaaontiaLoader": {
       "commandName": "Project",
+      "commandLineArgs": "--statuses --skills --fiend-types",
       "workingDirectory": "C:\\Users\\Shikatsu\\Documents\\Repos\\taaontia-sharp\\TaaontiaCore"
     }
   }
