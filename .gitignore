@@ -352,3 +352,5 @@ MigrationBackup/
 # Projet files
 /DiscordBot/config.json
 /TaaontiaCore/Taaontia.db
+/TaaontiaCore/Taaontia.db-wal
+/TaaontiaCore/Taaontia.db-shm
