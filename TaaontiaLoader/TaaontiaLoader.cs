@@ -219,6 +219,7 @@ namespace TaaontiaLoader
                             existingFiendType.Description = fiendType.Description;
                             existingFiendType.BaseEnergy = fiendType.BaseEnergy;
                             existingFiendType.BaseHealth = fiendType.BaseHealth;
+                            existingFiendType.Skills = _db.Skill.Where(skill => fiendType.Skills.Contains(skill.Id)).ToList();
 
                             try
                             {
