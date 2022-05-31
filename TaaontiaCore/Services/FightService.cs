@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using TaaontiaCore.Database;
 using TaaontiaCore.Database.Models;
@@ -49,7 +47,7 @@ namespace TaaontiaCore.Services
             var fight = await _db.Fight.SingleOrDefaultAsync(
                 fight => fight.IsActive &&
                 fight.IsGlobal == global &&
-                fight.Allies.Contains(charResult.Character));
+                fight.Player.RemoteId == charResult.Character.RemoteId);
             if (fight == null)
             {
                 return new FightResult
@@ -60,23 +58,25 @@ namespace TaaontiaCore.Services
             }
             return new FightResult
             {
+                Result = Enums.EResult.SUCCESS,
                 Fight = fight,
             };
         }
 
         public async Task<FightResult> Engage(EventBase e)
         {
-            var character = await _character.FindConnectedPlayerCharacter(e.RemoteId);
-            if (character.Result != Enums.EResult.SUCCESS)
+            var charResult = await _character.FindConnectedPlayerCharacter(e.RemoteId);
+            if (charResult.Result == Enums.EResult.ERROR)
             {
-                switch (character.Error)
+                switch (charResult.Error)
                 {
                     case Enums.ECharacterCreationError.CHARACTER_NOT_FOUND:
                         return new FightResult
                         {
-                            Result = Enums.EResult.FAILURE,
+                            Result = Enums.EResult.ERROR,
                             Error = Enums.EFightError.CHARACTER_NOT_FOUND,
                         };
+                    case Enums.ECharacterCreationError.UNKNOWN_ERROR:
                     default:
                         return new FightResult
                         {
@@ -85,8 +85,9 @@ namespace TaaontiaCore.Services
                         };
                 }
             }
+
             var currentFight = await GetCurrentFight(e.RemoteId);
-            if (currentFight != null)
+            if (currentFight.Result == Enums.EResult.SUCCESS)
             {
                 return new FightResult
                 {
@@ -99,11 +100,8 @@ namespace TaaontiaCore.Services
 
             var fight = new Fight
             {
-                Allies = new List<Character>
-                {
-                    character.Character,
-                },
-                Fiends = new List<Character> { enemy },
+                Player = charResult.Character,
+                Fiend = enemy,
                 IsActive = true,
             };
             await _db.Fight.AddAsync(fight);
@@ -116,14 +114,56 @@ namespace TaaontiaCore.Services
             };
         }
 
-        public FightResult Flee()
+        public async Task<FightResult> Flee(FightEvent e)
         {
-            return new FightResult();
+            var fightResult = await GetCurrentFight(e.RemoteId);
+            if (fightResult.Error == Enums.EFightError.NO_CURRENT_FIGHT)
+            {
+                return new FightResult
+                {
+                    Result = Enums.EResult.FAILURE,
+                    Error = Enums.EFightError.NO_CURRENT_FIGHT,
+                };
+            }
+
+            fightResult.Fight.IsActive = false;
+            await _db.SaveChangesAsync();
+
+            return new FightResult()
+            {
+                Result = Enums.EResult.SUCCESS
+            };
         }
 
-        public FightResult Action(FightEvent e)
+        public async Task<FightResult> Action(FightEvent e)
         {
-            return new FightResult();
+            var skill = await _db.Skill.SingleOrDefaultAsync(skill => skill.Id == e.SkillId);
+            var fightResult = await GetCurrentFight(e.RemoteId);
+            if (fightResult.Error != null)
+            {
+                return fightResult;
+            }
+
+            var deviation = new Random().Next(4) - 2;
+            var damage = (skill.BaseTargetDamage ?? 0) + deviation;
+
+            if (e.Target == Enums.EFightEventTarget.FIEND)
+            {
+                fightResult.Fight.Fiend.Health -= damage;
+            }
+            else
+            {
+                fightResult.Fight.Player.Health -= damage;
+            }
+
+            await _db.SaveChangesAsync();
+
+            return new FightResult()
+            {
+                Result = Enums.EResult.SUCCESS,
+                Fight = fightResult.Fight,
+                TargetDamage = damage,
+            };
         }
     }
 }

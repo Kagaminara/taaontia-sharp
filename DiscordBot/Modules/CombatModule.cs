@@ -93,136 +93,82 @@ namespace Discord_Bot.Modules
             }
                 );
 
+            if (result.Error == TaaontiaCore.Enums.EFightError.ALREADY_IN_FIGHT)
+            {
+                await ReplyAsync("You are already in a fight !");
+                return;
+            }
+
             var eb = new EmbedBuilder();
             var sb = new StringBuilder();
 
-            sb.AppendLine($"Health: {result.Fight.Fiends.First().Health}");
-            sb.AppendLine($"Energy: {result.Fight.Fiends.First().Energy}");
+            sb.AppendLine($"Health: {result.Fight.Fiend.Health}");
+            sb.AppendLine($"Energy: {result.Fight.Fiend.Energy}");
 
-            eb.Title = $"A wild {result.Fight.Fiends.First().Name} appears !";
+            eb.Title = $"A wild {result.Fight.Fiend.Name} appears !";
             eb.Description = sb.ToString();
 
             await ReplyAsync(null, false, eb.Build());
         }
 
-        //[Command("flee")]
-        //[Summary("Escape from your current fight like the coward you are")]
-        //public async Task FleeAsync()
-        //{
-        //    Character connectedCharacter = await _db.FindOrCreateConnectedCharacter(Context.User);
-        //    var currentFight = await _db.GetCurrentFight(Context.User);
+        [Command("flee")]
+        [Summary("Escape from your current fight like the coward you are")]
+        public async Task FleeAsync()
+        {
+            var playerFleeResult = await _taaontia.Fight.Flee(new FightEvent
+            {
+                RemoteId = Context.User.Id,
+            }
+);
+            if (playerFleeResult.Result == TaaontiaCore.Enums.EResult.SUCCESS)
+            {
+                await ReplyAsync("You successfully proved you weren't up for this.");
 
-        //    if (currentFight == null)
-        //    {
-        //        await ReplyAsync("You are not currently in a fight !");
-        //        return;
-        //    }
+            }
+            else
+            {
+                if (playerFleeResult.Error == TaaontiaCore.Enums.EFightError.NO_CURRENT_FIGHT)
+                {
+                    await ReplyAsync("You aren't currently in a fight.");
+                }
+            }
+        }
 
-        //    currentFight.IsActive = false;
-        //    await _db.Event.AddAsync(new Event
-        //    {
-        //        Author = connectedCharacter,
-        //        Fight = currentFight,
-        //        Type = Event.EEventType.Flee,
-        //    });
-        //    await _db.SaveChangesAsync();
+        [Command("attack")]
+        [Summary("Attack fiends")]
+        public async Task AttackAsync()
+        {
+            var eb = new EmbedBuilder();
+            var sb = new StringBuilder();
 
-        //    await ReplyAsync("You successfully proved you weren't up for this.");
-        //}
+            var playerAttackResult = await _taaontia.Fight.Action(new FightEvent
+            {
+                RemoteId = Context.User.Id,
+                Target = TaaontiaCore.Enums.EFightEventTarget.FIEND,
+                // TODO: Use skills that the player has actually access to
+                SkillId = 1
+            }
+    );
+            var fiendAttackResult = await _taaontia.Fight.Action(new FightEvent
+            {
+                RemoteId = Context.User.Id,
+                Target = TaaontiaCore.Enums.EFightEventTarget.PLAYER,
+                // TODO: Use skills that the fiend has actually access to
+                SkillId = 1
+            }
+    );
+            var ennemy = playerAttackResult.Fight.Fiend;
+            var character = playerAttackResult.Fight.Player;
 
-        //[Command("attack")]
-        //[Summary("Attack fiends")]
-        //public async Task AttackAsync()
-        //{
-        //    var eb = new EmbedBuilder();
-        //    var sb = new StringBuilder();
-        //    var currentFight = await _db.GetCurrentFight(Context.User);
+            sb.AppendLine($"You hit the {ennemy.Name} for {playerAttackResult.TargetDamage} damage !");
+            sb.AppendLine($"The {ennemy.Name} hit you for {fiendAttackResult.TargetDamage} damage !");
+            sb.AppendLine($"{character.Name}: {character.Health} / {character.MaxHealth} HP");
+            sb.AppendLine($"{ennemy.Name}: {ennemy.Health} / {ennemy.MaxHealth} HP");
+            eb.Title = "Fight !";
+            eb.Description = sb.ToString();
 
-        //    if (currentFight == null)
-        //    {
-        //        await ReplyAsync("You are not currently in a fight.");
-        //        return;
-        //    }
-
-        //    var character = currentFight.Allies.First();
-        //    var ennemy = currentFight.Fiends.First();
-
-        //    int characterDamage = new Random().Next(9) + 1;
-
-        //    currentFight.Fiends.First().Health -= characterDamage;
-        //    await _db.Event.AddAsync(new Event
-        //    {
-        //        Author = character,
-        //        Target = ennemy,
-        //        Value = characterDamage,
-        //        Fight = currentFight,
-        //        Type = Event.EEventType.Attack,
-        //    }); ;
-        //    await _db.Event.AddAsync(new Event
-        //    {
-        //        Author = character,
-        //        Target = ennemy,
-        //        Value = -characterDamage,
-        //        Fight = currentFight,
-        //        Type = Event.EEventType.HealthChange,
-        //    });
-
-        //    if (currentFight.Fiends.First().Health <= 0)
-        //    {
-        //        currentFight.IsActive = false;
-        //        await _db.SaveChangesAsync();
-        //        sb.AppendLine($"You hit the {ennemy.Name} for {characterDamage} damage !");
-        //        sb.AppendLine($"The {ennemy.Name} is dead !");
-        //        eb.Title = "Fight !";
-        //        eb.Description = sb.ToString();
-
-        //        await ReplyAsync(null, false, eb.Build());
-        //        return;
-        //    }
-
-        //    int fiendDamage = new Random().Next(9) + 1;
-        //    currentFight.Allies.First().Health -= fiendDamage;
-
-        //    await _db.Event.AddAsync(new Event
-        //    {
-        //        Author = ennemy,
-        //        Target = character,
-        //        Value = fiendDamage,
-        //        Fight = currentFight,
-        //        Type = Event.EEventType.Attack,
-        //    }); ;
-        //    await _db.Event.AddAsync(new Event
-        //    {
-        //        Author = ennemy,
-        //        Target = character,
-        //        Value = -fiendDamage,
-        //        Fight = currentFight,
-        //        Type = Event.EEventType.HealthChange,
-        //    });
-
-        //    if (currentFight.Allies.First().Health <= 0)
-        //    {
-        //        currentFight.IsActive = false;
-        //        await _db.SaveChangesAsync();
-        //        sb.AppendLine($"The {ennemy.Name} hit you for {fiendDamage} damage !");
-        //        sb.AppendLine($"You are dead :( !");
-        //        eb.Title = "Fight !";
-        //        eb.Description = sb.ToString();
-
-        //        await ReplyAsync(null, false, eb.Build());
-        //        return;
-        //    }
-
-        //    await _db.SaveChangesAsync();
-        //    sb.AppendLine($"You hit the  you {ennemy.Name} for {characterDamage} damage !");
-        //    sb.AppendLine($"The {ennemy.Name} hit you for {fiendDamage} damage !");
-        //    sb.AppendLine($"{character.Name}: {character.Health} / {character.MaxHealth} HP");
-        //    sb.AppendLine($"{ennemy.Name}: {ennemy.Health} / {ennemy.MaxHealth} HP");
-        //    eb.Title = "Fight !";
-        //    eb.Description = sb.ToString();
-
-        //    await ReplyAsync(null, false, eb.Build());
-        //}
+            await ReplyAsync(null, false, eb.Build());
+        }
 
         //[Command("defend")]
         //[Summary("Defend from fiends")]

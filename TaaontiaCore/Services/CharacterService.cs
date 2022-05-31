@@ -9,6 +9,7 @@ using TaaontiaCore.Database;
 using TaaontiaCore.Database.Models;
 using TaaontiaCore.Enums;
 using TaaontiaCore.Events;
+using TaaontiaCore.Interfaces;
 
 namespace TaaontiaCore.Services
 {
@@ -23,7 +24,7 @@ namespace TaaontiaCore.Services
 
         public async Task<CharacterResult> FindConnectedPlayerCharacter(ulong remoteId)
         {
-            Character connectedCharacter = await _db.Character.SingleOrDefaultAsync(character => character.Player.RemoteId == remoteId);
+            Player connectedCharacter = await _db.Player.SingleOrDefaultAsync(player => player.RemoteId == remoteId);
             if (connectedCharacter == null)
             {
                 return new CharacterResult
@@ -42,7 +43,7 @@ namespace TaaontiaCore.Services
 
         public async Task<CharacterResult> CreateCharacter(NewCharacter newCharacter)
         {
-            var currentCharacter = await _db.Character.AnyAsync(c => c.Player.RemoteId == newCharacter.RemoteId);
+            var currentCharacter = await _db.Player.AnyAsync(c => c.RemoteId == newCharacter.RemoteId);
             if (currentCharacter)
             {
                 return new CharacterResult
@@ -52,7 +53,7 @@ namespace TaaontiaCore.Services
                 };
             }
 
-            var character = new Character()
+            var character = new Player()
             {
                 Name = newCharacter.Name,
                 Experience = 0,
@@ -61,10 +62,7 @@ namespace TaaontiaCore.Services
                 MaxEnergy = 50,
                 Health = 50,
                 Energy = 50,
-                Player = new Player
-                {
-                    RemoteId = newCharacter.RemoteId,
-                },
+                RemoteId = newCharacter.RemoteId,
                 Skills = new List<Skill>
                 {
                     // Skills by default, mainly for the alpha phase.
@@ -73,7 +71,7 @@ namespace TaaontiaCore.Services
                     _db.Skill.First(skill => skill.Id == 2)
                 }
             };
-            await _db.Character.AddAsync(character);
+            await _db.Player.AddAsync(character);
             await _db.SaveChangesAsync();
 
             return new CharacterResult
@@ -83,11 +81,11 @@ namespace TaaontiaCore.Services
             };
         }
 
-        public Character GetRandomEnemyCharacter()
+        public Fiend GetRandomEnemyCharacter()
         {
             var ids = _db.FiendType.ToArray();
             var fiendType = ids[new Random().Next(ids.Count())];
-            return new Character(fiendType);
+            return new Fiend(fiendType);
         }
 
     }

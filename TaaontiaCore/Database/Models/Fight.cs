@@ -8,9 +8,8 @@ namespace TaaontiaCore.Database.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public ICollection<Character> Allies { get; set; }
-        public ICollection<Character> Fiends { get; set; }
-        public ICollection<Event> Events { get; set; }
+        public Player Player { get; set; }
+        public Fiend Fiend { get; set; }
         public bool IsActive { get; set; }
         public bool IsGlobal { get; set; }
     }

@@ -66,3 +66,7 @@ Describes a event during a fight, be it an attack, a parry, a lost or gain of He
 - `fight - [fk Combat]` Related fight
 - `type - [EFightEventType]` Type of event, described by the `EFightEventType` enum
 - `value - [number]` The amount of whatever thing (related to `type`)
+
+# Ideas
+
+Remove events completely, and have a "stat" tables that auto-update with each actions

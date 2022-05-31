@@ -8,7 +8,7 @@ namespace TaaontiaCore.Events
         public EFightError? Error;
         public Fight Fight;
         public int? SourceDamage;
-        public int? TargerDamage;
+        public int? TargetDamage;
         public Status SourceStatus;
         public Status TargetStatus;
 

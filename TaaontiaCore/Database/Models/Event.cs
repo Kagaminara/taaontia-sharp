@@ -26,8 +26,8 @@ namespace TaaontiaCore.Database.Models
         [Key]
         public Guid Id { get; set; }
         public Fight Fight { get; set; }
-        public Character SourceId { get; set; }
-        public Character Target { get; set; }
+        public Player Player { get; set; }
+        public Fiend Target { get; set; }
         public EEventType Type { get; set; }
         public int Value { get; set; }
     }

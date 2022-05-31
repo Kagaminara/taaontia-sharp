@@ -20,8 +20,6 @@ namespace Discord_Bot.Database
         [Key]
         public long Id { get; set; }
         public Fight Fight { get; set; }
-        public Character Author { get; set; }
-        public Character Target { get; set; }
         public EEventType Type { get; set; }
         public int Value { get; set; }
     }

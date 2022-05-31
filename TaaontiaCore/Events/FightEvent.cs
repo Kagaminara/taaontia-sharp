@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaaontiaCore.Enums;
 
 namespace TaaontiaCore.Events
 {
@@ -14,7 +15,6 @@ namespace TaaontiaCore.Events
     public class FightEvent : EventBase
     {
         public ulong SkillId;
-        public ulong SourceId;
-        public ulong TargetId;
+        public EFightEventTarget Target;
     }
 }

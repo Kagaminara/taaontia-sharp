@@ -16,19 +16,19 @@ namespace TaaontiaCore.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.12");
 
-            modelBuilder.Entity("CharacterSkill", b =>
+            modelBuilder.Entity("FiendSkill", b =>
                 {
-                    b.Property<Guid>("CharactersId")
+                    b.Property<Guid>("FiendsId")
                         .HasColumnType("TEXT");
 
                     b.Property<uint>("SkillsId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("CharactersId", "SkillsId");
+                    b.HasKey("FiendsId", "SkillsId");
 
                     b.HasIndex("SkillsId");
 
-                    b.ToTable("CharacterSkill");
+                    b.ToTable("FiendSkill");
                 });
 
             modelBuilder.Entity("FiendTypeSkill", b =>
@@ -46,7 +46,54 @@ namespace TaaontiaCore.Migrations
                     b.ToTable("FiendTypeSkill");
                 });
 
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Character", b =>
+            modelBuilder.Entity("PlayerSkill", b =>
+                {
+                    b.Property<Guid>("PlayersId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("SkillsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PlayersId", "SkillsId");
+
+                    b.HasIndex("SkillsId");
+
+                    b.ToTable("PlayerSkill");
+                });
+
+            modelBuilder.Entity("TaaontiaCore.Database.Models.Event", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("FightId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("PlayerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("TargetId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FightId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("Event");
+                });
+
+            modelBuilder.Entity("TaaontiaCore.Database.Models.Fiend", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,12 +104,6 @@ namespace TaaontiaCore.Migrations
 
                     b.Property<int>("Experience")
                         .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("FightId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("FightId1")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("Health")
                         .HasColumnType("INTEGER");
@@ -80,64 +121,6 @@ namespace TaaontiaCore.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FightId");
-
-                    b.HasIndex("FightId1");
-
-                    b.ToTable("Character");
-                });
-
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Event", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("FightId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("SourceIdId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("TargetId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FightId");
-
-                    b.HasIndex("SourceIdId");
-
-                    b.HasIndex("TargetId");
-
-                    b.ToTable("Event");
-                });
-
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Fiend", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("CharacterForeignKey")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong?>("FiendTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterForeignKey")
-                        .IsUnique();
-
-                    b.HasIndex("FiendTypeId");
 
                     b.ToTable("Fiend");
                 });
@@ -198,16 +181,31 @@ namespace TaaontiaCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("CharacterForeignKey")
+                    b.Property<int>("Energy")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Experience")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxEnergy")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MaxHealth")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("RemoteId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CharacterForeignKey")
-                        .IsUnique();
 
                     b.ToTable("Player");
                 });
@@ -254,22 +252,12 @@ namespace TaaontiaCore.Migrations
                     b.Property<int>("RemainingDuration")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("SourceId")
-                        .HasColumnType("TEXT");
-
                     b.Property<uint?>("StatusTypeId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("TargetId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SourceId");
-
                     b.HasIndex("StatusTypeId");
-
-                    b.HasIndex("TargetId");
 
                     b.ToTable("Status");
                 });
@@ -300,11 +288,11 @@ namespace TaaontiaCore.Migrations
                     b.ToTable("StatusType");
                 });
 
-            modelBuilder.Entity("CharacterSkill", b =>
+            modelBuilder.Entity("FiendSkill", b =>
                 {
-                    b.HasOne("TaaontiaCore.Database.Models.Character", null)
+                    b.HasOne("TaaontiaCore.Database.Models.Fiend", null)
                         .WithMany()
-                        .HasForeignKey("CharactersId")
+                        .HasForeignKey("FiendsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -330,75 +318,55 @@ namespace TaaontiaCore.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Character", b =>
+            modelBuilder.Entity("PlayerSkill", b =>
                 {
-                    b.HasOne("TaaontiaCore.Database.Models.Fight", null)
-                        .WithMany("Allies")
-                        .HasForeignKey("FightId");
+                    b.HasOne("TaaontiaCore.Database.Models.Player", null)
+                        .WithMany()
+                        .HasForeignKey("PlayersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("TaaontiaCore.Database.Models.Fight", null)
-                        .WithMany("Fiends")
-                        .HasForeignKey("FightId1");
+                    b.HasOne("TaaontiaCore.Database.Models.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("SkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Event", b =>
                 {
                     b.HasOne("TaaontiaCore.Database.Models.Fight", "Fight")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("FightId");
 
-                    b.HasOne("TaaontiaCore.Database.Models.Character", "SourceId")
-                        .WithMany()
-                        .HasForeignKey("SourceIdId");
+                    b.HasOne("TaaontiaCore.Database.Models.Player", "Player")
+                        .WithMany("Events")
+                        .HasForeignKey("PlayerId");
 
-                    b.HasOne("TaaontiaCore.Database.Models.Character", "Target")
+                    b.HasOne("TaaontiaCore.Database.Models.Fiend", "Target")
                         .WithMany()
                         .HasForeignKey("TargetId");
 
                     b.Navigation("Fight");
 
-                    b.Navigation("SourceId");
+                    b.Navigation("Player");
 
                     b.Navigation("Target");
                 });
 
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Fiend", b =>
-                {
-                    b.HasOne("TaaontiaCore.Database.Models.Character", "Character")
-                        .WithOne("Fiend")
-                        .HasForeignKey("TaaontiaCore.Database.Models.Fiend", "CharacterForeignKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TaaontiaCore.Database.Models.FiendType", "FiendType")
-                        .WithMany()
-                        .HasForeignKey("FiendTypeId");
-
-                    b.Navigation("Character");
-
-                    b.Navigation("FiendType");
-                });
-
             modelBuilder.Entity("TaaontiaCore.Database.Models.Fight", b =>
                 {
-                    b.HasOne("TaaontiaCore.Database.Models.Fiend", null)
+                    b.HasOne("TaaontiaCore.Database.Models.Fiend", "Fiend")
                         .WithMany("Fights")
                         .HasForeignKey("FiendId");
 
-                    b.HasOne("TaaontiaCore.Database.Models.Player", null)
+                    b.HasOne("TaaontiaCore.Database.Models.Player", "Player")
                         .WithMany("Fights")
                         .HasForeignKey("PlayerId");
-                });
 
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Player", b =>
-                {
-                    b.HasOne("TaaontiaCore.Database.Models.Character", "Character")
-                        .WithOne("Player")
-                        .HasForeignKey("TaaontiaCore.Database.Models.Player", "CharacterForeignKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Fiend");
 
-                    b.Navigation("Character");
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Skill", b =>
@@ -418,30 +386,11 @@ namespace TaaontiaCore.Migrations
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Status", b =>
                 {
-                    b.HasOne("TaaontiaCore.Database.Models.Character", "Source")
-                        .WithMany()
-                        .HasForeignKey("SourceId");
-
                     b.HasOne("TaaontiaCore.Database.Models.StatusType", "StatusType")
                         .WithMany()
                         .HasForeignKey("StatusTypeId");
 
-                    b.HasOne("TaaontiaCore.Database.Models.Character", "Target")
-                        .WithMany()
-                        .HasForeignKey("TargetId");
-
-                    b.Navigation("Source");
-
                     b.Navigation("StatusType");
-
-                    b.Navigation("Target");
-                });
-
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Character", b =>
-                {
-                    b.Navigation("Fiend");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("TaaontiaCore.Database.Models.Fiend", b =>
@@ -449,17 +398,10 @@ namespace TaaontiaCore.Migrations
                     b.Navigation("Fights");
                 });
 
-            modelBuilder.Entity("TaaontiaCore.Database.Models.Fight", b =>
-                {
-                    b.Navigation("Allies");
-
-                    b.Navigation("Events");
-
-                    b.Navigation("Fiends");
-                });
-
             modelBuilder.Entity("TaaontiaCore.Database.Models.Player", b =>
                 {
+                    b.Navigation("Events");
+
                     b.Navigation("Fights");
                 });
 #pragma warning restore 612, 618

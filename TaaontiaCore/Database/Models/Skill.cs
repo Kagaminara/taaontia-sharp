@@ -22,7 +22,8 @@ namespace TaaontiaCore.Database.Models
         /// Optional. Some skill can also trigger a Status
         /// </summary>
         public StatusType TargetStatus { get; set; }
-        public ICollection<Character> Characters { get; set; }
+        public ICollection<Player> Players { get; set; }
+        public ICollection<Fiend> Fiends { get; set; }
         public ICollection<FiendType> FiendTypes { get; set; }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using TaaontiaCore.Database.Models;
 using TaaontiaCore.Enums;
+using TaaontiaCore.Interfaces;
 
 namespace TaaontiaCore.Events
 {
     public class CharacterResult: ResultBase
     {
         public ECharacterCreationError? Error;
-        public Character Character;
+        public Player Character;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TaaontiaCore.Migrations
 {
-    public partial class SkillAndStatusType : Migration
+    public partial class RemoveEventFight : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

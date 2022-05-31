@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using TaaontiaCore.Database.Models;
 
-namespace Discord_Bot.Database
+namespace TaaontiaCore.Interfaces
 {
-    public class Fiend
+    public interface ICharacter
     {
-        [Key]
-        public long Id { get; set; }
         public string Name { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
@@ -14,7 +12,7 @@ namespace Discord_Bot.Database
         public int MaxEnergy { get; set; }
         public int Level { get; set; }
         public int Experience { get; set; }
-        public FiendType FiendType { get; set; }
+        public ICollection<Skill> Skills { get; set; }
         public ICollection<Fight> Fights { get; set; }
     }
 }

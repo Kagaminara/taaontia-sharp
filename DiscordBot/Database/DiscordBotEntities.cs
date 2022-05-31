@@ -8,11 +8,10 @@ namespace Discord_Bot.Database
     public partial class DiscordBotEntities : DbContext
     {
         public virtual DbSet<EightBallAnswer> EightBallAnswer { get; set; }
-        public virtual DbSet<Character> Character { get; set; }
         public virtual DbSet<Player> Player { get; set; }
         public virtual DbSet<Fiend> Fiend { get; set; }
         public virtual DbSet<FiendType> FiendType { get; set; }
-        public virtual DbSet<Fight> Fight{ get; set; }
+        public virtual DbSet<Fight> Fight { get; set; }
         public virtual DbSet<Event> Event { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -23,24 +22,12 @@ namespace Discord_Bot.Database
             optionsBuilder.UseSqlite(connection);
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public async Task<Player> FindOrCreateConnectedCharacter(SocketUser user)
         {
-            modelBuilder.Entity<Character>()
-                .HasOne(b => b.Fiend)
-                .WithOne(i => i.Character)
-                .HasForeignKey<Fiend>(b => b.CharacterForeignKey);
-            modelBuilder.Entity<Character>()
-                .HasOne(b => b.Player)
-                .WithOne(i => i.Character)
-                .HasForeignKey<Player>(b => b.CharacterForeignKey);
-        }
-
-        public async Task<Character> FindOrCreateConnectedCharacter(SocketUser user)
-        {
-            Character connectedCharacter = await Character.SingleOrDefaultAsync(character => character.Player.DiscordId == user.Id);
+            Player connectedCharacter = await Player.SingleOrDefaultAsync(player => player.DiscordId == user.Id);
             if (connectedCharacter == null)
             {
-                connectedCharacter = new Character
+                connectedCharacter = new Player
                 {
                     Name = user.Username,
                     Experience = 0,
@@ -49,13 +36,10 @@ namespace Discord_Bot.Database
                     MaxEnergy = 50,
                     Health = 50,
                     Energy = 50,
-                    Player = new Player
-                    {
-                        DiscordId = user.Id,
-                        DiscordDiscriminator = user.Discriminator,
-                    }
+                    DiscordId = user.Id,
+                    DiscordDiscriminator = user.Discriminator,
                 };
-                await Character.AddAsync(connectedCharacter);
+                await Player.AddAsync(connectedCharacter);
                 await SaveChangesAsync();
             }
 
@@ -66,7 +50,7 @@ namespace Discord_Bot.Database
         {
             var character = await FindOrCreateConnectedCharacter(user);
 
-            return await Fight.SingleOrDefaultAsync(fight => fight.IsActive && fight.IsGlobal == global && fight.Allies.Contains(character));
+            return await Fight.SingleOrDefaultAsync(fight => fight.IsActive && fight.IsGlobal == global && fight.Player == character);
         }
     }
 }
