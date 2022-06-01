@@ -1,4 +1,5 @@
 ﻿using TaaontiaCore.Database.Models;
+using TaaontiaCore.DTO;
 using TaaontiaCore.Enums;
 
 namespace TaaontiaCore.Events
@@ -11,6 +12,6 @@ namespace TaaontiaCore.Events
         public int? TargetDamage;
         public Status SourceStatus;
         public Status TargetStatus;
-
+        public FightCompleteRewards Rewards;
     }
 }

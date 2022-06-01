@@ -149,24 +149,51 @@ namespace Discord_Bot.Modules
                 SkillId = 1
             }
     );
-            var fiendAttackResult = await _taaontia.Fight.Action(new FightEvent
+            if (playerAttackResult.Result != TaaontiaCore.Enums.EResult.SUCCESS)
             {
-                RemoteId = Context.User.Id,
-                Target = TaaontiaCore.Enums.EFightEventTarget.PLAYER,
-                // TODO: Use skills that the fiend has actually access to
-                SkillId = 1
+                switch (playerAttackResult.Error)
+                {
+                    case TaaontiaCore.Enums.EFightError.NO_CURRENT_FIGHT:
+                        await ReplyAsync("You aren't currently in a fight.");
+                        return;
+                    default:
+                        await ReplyAsync("An error occured.");
+                        return;
+                }
             }
-    );
+            FightResult fiendAttackResult = null;
+            if (playerAttackResult.Fight.IsActive)
+            {
+                fiendAttackResult = await _taaontia.Fight.Action(new FightEvent
+                {
+                    RemoteId = Context.User.Id,
+                    Target = TaaontiaCore.Enums.EFightEventTarget.PLAYER,
+                    // TODO: Use skills that the fiend has actually access to
+                    SkillId = 1
+                }
+                    );
+            }
             var ennemy = playerAttackResult.Fight.Fiend;
             var character = playerAttackResult.Fight.Player;
 
+            eb.Title = "Fight !";
             sb.AppendLine($"You hit the {ennemy.Name} for {playerAttackResult.TargetDamage} damage !");
-            sb.AppendLine($"The {ennemy.Name} hit you for {fiendAttackResult.TargetDamage} damage !");
+            if (playerAttackResult.Fight.IsActive)
+            {
+                sb.AppendLine($"The {ennemy.Name} hit you for {fiendAttackResult.TargetDamage} damage !");
+            }
             sb.AppendLine($"{character.Name}: {character.Health} / {character.MaxHealth} HP");
             sb.AppendLine($"{ennemy.Name}: {ennemy.Health} / {ennemy.MaxHealth} HP");
-            eb.Title = "Fight !";
-            eb.Description = sb.ToString();
 
+            if (!playerAttackResult.Fight.IsActive)
+            {
+                var rewards = playerAttackResult.Rewards;
+                sb.AppendLine($"\nYou won !");
+                sb.AppendLine($"You gained {rewards.Experience} exp !");
+                sb.AppendLine($"You found {rewards.Currency} gold !");
+            }
+            
+            eb.Description = sb.ToString();
             await ReplyAsync(null, false, eb.Build());
         }
 

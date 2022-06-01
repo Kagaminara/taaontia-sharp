@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using TaaontiaCore.Database;
 using TaaontiaCore.Database.Models;
 using TaaontiaCore.Events;
+using TaaontiaCore.DTO;
+using System.Collections.Generic;
 
 namespace TaaontiaCore.Services
 {
@@ -21,7 +23,7 @@ namespace TaaontiaCore.Services
             _character = services.GetRequiredService<CharacterService>();
         }
 
-        private async Task<FightResult> GetCurrentFight(ulong remoteId, bool global = false)
+        private async Task<FightResult> _getCurrentFight(ulong remoteId, bool global = false)
         {
             var charResult = await _character.FindConnectedPlayerCharacter(remoteId);
             if (charResult.Result == Enums.EResult.ERROR)
@@ -44,7 +46,7 @@ namespace TaaontiaCore.Services
                 }
             }
 
-            var fight = await _db.Fight.SingleOrDefaultAsync(
+            var fight = await _db.Fight.Include(fight => fight.Fiend).SingleOrDefaultAsync(
                 fight => fight.IsActive &&
                 fight.IsGlobal == global &&
                 fight.Player.RemoteId == charResult.Character.RemoteId);
@@ -86,7 +88,7 @@ namespace TaaontiaCore.Services
                 }
             }
 
-            var currentFight = await GetCurrentFight(e.RemoteId);
+            var currentFight = await _getCurrentFight(e.RemoteId);
             if (currentFight.Result == Enums.EResult.SUCCESS)
             {
                 return new FightResult
@@ -116,7 +118,7 @@ namespace TaaontiaCore.Services
 
         public async Task<FightResult> Flee(FightEvent e)
         {
-            var fightResult = await GetCurrentFight(e.RemoteId);
+            var fightResult = await _getCurrentFight(e.RemoteId);
             if (fightResult.Error == Enums.EFightError.NO_CURRENT_FIGHT)
             {
                 return new FightResult
@@ -138,7 +140,7 @@ namespace TaaontiaCore.Services
         public async Task<FightResult> Action(FightEvent e)
         {
             var skill = await _db.Skill.SingleOrDefaultAsync(skill => skill.Id == e.SkillId);
-            var fightResult = await GetCurrentFight(e.RemoteId);
+            var fightResult = await _getCurrentFight(e.RemoteId);
             if (fightResult.Error != null)
             {
                 return fightResult;
@@ -156,14 +158,36 @@ namespace TaaontiaCore.Services
                 fightResult.Fight.Player.Health -= damage;
             }
 
-            await _db.SaveChangesAsync();
-
-            return new FightResult()
+            var result = new FightResult()
             {
                 Result = Enums.EResult.SUCCESS,
                 Fight = fightResult.Fight,
                 TargetDamage = damage,
             };
+
+            if (_isFightCompleted(fightResult.Fight))
+            {
+                result.Fight.IsActive = false;
+                result.Rewards = new FightCompleteRewards()
+                {
+                    Currency = new Random().Next(10) + 10,
+                    Experience = new Random().Next(10) + 10,
+                    Items = new List<Item>()
+                };
+            }
+
+            await _db.SaveChangesAsync();
+
+            return result;
+        }
+
+        private bool _isFightCompleted(Fight fight)
+        {
+            if (fight.Fiend.Health <= 0 || fight.Player.Health <= 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

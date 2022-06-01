@@ -20,6 +20,8 @@ namespace TaaontiaCore.Database.Models
         public int MaxEnergy { get; set; }
         public int Level { get; set; }
         public int Experience { get; set; }
+        // TODO: Add loot reward collection
+        // TODO: Add experience reward
         public ICollection<Skill> Skills { get; set; }
         public ICollection<Fight> Fights { get; set; }
 
