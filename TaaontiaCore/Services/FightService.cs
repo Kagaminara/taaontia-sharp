@@ -119,13 +119,9 @@ namespace TaaontiaCore.Services
         public async Task<FightResult> Flee(FightEvent e)
         {
             var fightResult = await _getCurrentFight(e.RemoteId);
-            if (fightResult.Error == Enums.EFightError.NO_CURRENT_FIGHT)
+            if (fightResult.Result != Enums.EResult.SUCCESS)
             {
-                return new FightResult
-                {
-                    Result = Enums.EResult.FAILURE,
-                    Error = Enums.EFightError.NO_CURRENT_FIGHT,
-                };
+                return fightResult;
             }
 
             fightResult.Fight.IsActive = false;
@@ -179,6 +175,17 @@ namespace TaaontiaCore.Services
             await _db.SaveChangesAsync();
 
             return result;
+        }
+
+        public async Task<FightResult> GetFight(FightEvent e)
+        {
+            var fightResult = await _getCurrentFight(e.RemoteId);
+            if (fightResult.Result != Enums.EResult.SUCCESS)
+            {
+                return fightResult;
+            }
+
+            return fightResult;
         }
 
         private bool _isFightCompleted(Fight fight)

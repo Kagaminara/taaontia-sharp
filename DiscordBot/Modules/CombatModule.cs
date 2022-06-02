@@ -3,10 +3,7 @@ using Discord.Commands;
 using Discord;
 using System;
 using System.Threading.Tasks;
-using Discord_Bot.Database;
-using Discord.WebSocket;
 using System.Linq;
-using System.Collections.Generic;
 using System.Text;
 using TaaontiaCore.Events;
 
@@ -56,31 +53,40 @@ namespace Discord_Bot.Modules
             await ReplyAsync(null, false, builder.Build());
         }
 
-        //[Command]
-        //[Summary("Describe the current fight")]
-        //public async Task FightAsync()
-        //{
-        //    var currentFight = await _db.GetCurrentFight(Context.User);
+        [Command]
+        [Summary("Describe the current fight")]
+        public async Task FightAsync()
+        {
+            var result = await _taaontia.Fight.GetFight(new FightEvent()
+            {
+                RemoteId = Context.User.Id
+            });
 
-        //    if (currentFight == null)
-        //    {
-        //        await ReplyAsync("You are not currently in a fight !");
-        //        return;
-        //    }
+            if (result.Result != TaaontiaCore.Enums.EResult.SUCCESS)
+            {
+                switch (result.Error)
+                {
+                    case TaaontiaCore.Enums.EFightError.NO_CURRENT_FIGHT:
+                        await ReplyAsync("You aren't currently in a fight.");
+                        return;
+                    default:
+                        await ReplyAsync("An error occured :(");
+                        return;
+                }
+            }
 
-        //    var character = currentFight.Allies.First();
-        //    var ennemy = currentFight.Fiends.First();
+            var currentFight = result.Fight;
 
-        //    var eb = new EmbedBuilder();
-        //    var sb = new StringBuilder();
+            var eb = new EmbedBuilder();
+            var sb = new StringBuilder();
 
-        //    sb.AppendLine($"{character.Name}\n{character.Health} / {character.MaxHealth} HP\n{character.Health} / {character.MaxHealth} EP");
-        //    sb.AppendLine($"{ennemy.Name}\n{ennemy.Health} / {ennemy.MaxHealth} HP\n{ennemy.Health} / {ennemy.MaxHealth} EP");
+            sb.AppendLine($"{currentFight.Player.Name}\n{currentFight.Player.Health} / {currentFight.Player.MaxHealth} HP\n{currentFight.Player.Energy} / {currentFight.Player.MaxEnergy} EP");
+            sb.AppendLine($"{currentFight.Fiend.Name}\n{currentFight.Fiend.Health} / {currentFight.Fiend.MaxHealth} HP\n{currentFight.Fiend.Energy} / {currentFight.Fiend.MaxEnergy} EP");
 
-        //    eb.Title = "Current Fight";
-        //    eb.Description = sb.ToString();
-        //    await ReplyAsync(null, false, eb.Build());
-        //}
+            eb.Title = "Current Fight";
+            eb.Description = sb.ToString();
+            await ReplyAsync(null, false, eb.Build());
+        }
 
 
         [Command("engage")]
