@@ -11,12 +11,13 @@ namespace TaaontiaCore
     {
         private readonly ServiceProvider _services;
         private readonly GameService _game;
+        public GameService Game => _game;
 
         private readonly FightService _fight;
         public FightService Fight => _fight;
 
-        private readonly CharacterService _character;
-        public CharacterService Character => _character;
+        private readonly PlayerService _player;
+        public PlayerService Player => _player;
 
         public TaaontiaCore()
         {
@@ -24,7 +25,7 @@ namespace TaaontiaCore
 
             _game = _services.GetRequiredService<GameService>();
             _fight = _services.GetRequiredService<FightService>();
-            _character = _services.GetRequiredService<CharacterService>();
+            _player = _services.GetRequiredService<PlayerService>();
         }
 
         private ServiceProvider ConfigureServices()
@@ -33,7 +34,7 @@ namespace TaaontiaCore
                 .AddSingleton<LoggingService>()
                 .AddSingleton<GameService>()
                 .AddSingleton<FightService>()
-                .AddSingleton<CharacterService>()
+                .AddSingleton<PlayerService>()
                 .AddDbContext<TaaontiaEntities>();
 
             var serviceProvider = services.BuildServiceProvider();

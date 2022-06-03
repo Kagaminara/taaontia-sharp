@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace TaaontiaCore.Enums
 {
-    public enum EFightError
+    public enum ECharacterError
     {
         UNKNOWN_ERROR = 0,
         CHARACTER_NOT_FOUND,
-        NO_CURRENT_FIGHT,
-        ALREADY_IN_FIGHT,
-        NOT_ENOUGH_HEALTH,
-    };
+        CURRENTLY_IN_FIGHT,
+        REMOTE_ID_ALREADY_EXISTS,
+    }
 }

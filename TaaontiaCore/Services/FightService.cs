@@ -7,6 +7,7 @@ using TaaontiaCore.Database.Models;
 using TaaontiaCore.Events;
 using TaaontiaCore.DTO;
 using System.Collections.Generic;
+using TaaontiaCore.Interfaces;
 
 namespace TaaontiaCore.Services
 {
@@ -14,29 +15,34 @@ namespace TaaontiaCore.Services
     {
         private readonly TaaontiaEntities _db;
         private readonly LoggingService _logging;
-        private readonly CharacterService _character;
+        private readonly PlayerService _player;
 
         public FightService(IServiceProvider services)
         {
             _db = services.GetRequiredService<TaaontiaEntities>();
             _logging = services.GetRequiredService<LoggingService>();
-            _character = services.GetRequiredService<CharacterService>();
+            _player = services.GetRequiredService<PlayerService>();
+        }
+
+        internal async Task<FightResult> GetFight(Player player)
+        {
+            return await _getCurrentFight(player.RemoteId);
         }
 
         private async Task<FightResult> _getCurrentFight(ulong remoteId, bool global = false)
         {
-            var charResult = await _character.FindConnectedPlayerCharacter(remoteId);
+            var charResult = await _player.FindConnectedPlayerCharacter(remoteId);
             if (charResult.Result == Enums.EResult.ERROR)
             {
                 switch (charResult.Error)
                 {
-                    case Enums.ECharacterCreationError.CHARACTER_NOT_FOUND:
+                    case Enums.ECharacterError.CHARACTER_NOT_FOUND:
                         return new FightResult
                         {
                             Result = Enums.EResult.ERROR,
                             Error = Enums.EFightError.CHARACTER_NOT_FOUND,
                         };
-                    case Enums.ECharacterCreationError.UNKNOWN_ERROR:
+                    case Enums.ECharacterError.UNKNOWN_ERROR:
                     default:
                         return new FightResult
                         {
@@ -67,18 +73,18 @@ namespace TaaontiaCore.Services
 
         public async Task<FightResult> Engage(EventBase e)
         {
-            var charResult = await _character.FindConnectedPlayerCharacter(e.RemoteId);
+            var charResult = await _player.FindConnectedPlayerCharacter(e.RemoteId);
             if (charResult.Result == Enums.EResult.ERROR)
             {
                 switch (charResult.Error)
                 {
-                    case Enums.ECharacterCreationError.CHARACTER_NOT_FOUND:
+                    case Enums.ECharacterError.CHARACTER_NOT_FOUND:
                         return new FightResult
                         {
                             Result = Enums.EResult.ERROR,
                             Error = Enums.EFightError.CHARACTER_NOT_FOUND,
                         };
-                    case Enums.ECharacterCreationError.UNKNOWN_ERROR:
+                    case Enums.ECharacterError.UNKNOWN_ERROR:
                     default:
                         return new FightResult
                         {
@@ -86,6 +92,14 @@ namespace TaaontiaCore.Services
                             Error = Enums.EFightError.UNKNOWN_ERROR,
                         };
                 }
+            }
+            if (charResult.Character.Health <= 0)
+            {
+                return new FightResult()
+                {
+                    Result = Enums.EResult.ERROR,
+                    Error = Enums.EFightError.NOT_ENOUGH_HEALTH,
+                };
             }
 
             var currentFight = await _getCurrentFight(e.RemoteId);
@@ -98,7 +112,7 @@ namespace TaaontiaCore.Services
                 };
             }
 
-            var enemy = _character.GetRandomEnemyCharacter();
+            var enemy = _player.GetRandomEnemyCharacter();
 
             var fight = new Fight
             {

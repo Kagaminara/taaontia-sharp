@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TaaontiaCore.Enums
 {
-    public enum ECharacterCreationError
+    public enum ECharacterEventType
     {
-        UNKNOWN_ERROR = 0,
-        REMOTE_ID_ALREADY_EXISTS,
-        CHARACTER_NOT_FOUND,
+        REST = 0,
+        // Fish, other things?
     }
 }

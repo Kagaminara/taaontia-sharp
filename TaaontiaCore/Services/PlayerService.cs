@@ -13,11 +13,11 @@ using TaaontiaCore.Interfaces;
 
 namespace TaaontiaCore.Services
 {
-    public class CharacterService
+    public class PlayerService
     {
         private readonly TaaontiaEntities _db;
 
-        public CharacterService(IServiceProvider services)
+        public PlayerService(IServiceProvider services)
         {
             _db = services.GetRequiredService<TaaontiaEntities>();
         }
@@ -30,7 +30,7 @@ namespace TaaontiaCore.Services
                 return new CharacterResult
                 {
                     Result = EResult.FAILURE,
-                    Error = ECharacterCreationError.CHARACTER_NOT_FOUND,
+                    Error = ECharacterError.CHARACTER_NOT_FOUND,
                 };
             }
 
@@ -41,28 +41,28 @@ namespace TaaontiaCore.Services
             };
         }
 
-        public async Task<CharacterResult> CreateCharacter(NewCharacter newCharacter)
+        public async Task<CharacterResult> CreatePlayer(NewCharacter newPlayer)
         {
-            var currentCharacter = await _db.Player.AnyAsync(c => c.RemoteId == newCharacter.RemoteId);
-            if (currentCharacter)
+            var currentPlayer = await _db.Player.AnyAsync(c => c.RemoteId == newPlayer.RemoteId);
+            if (currentPlayer)
             {
                 return new CharacterResult
                 {
                     Result = EResult.ERROR,
-                    Error = ECharacterCreationError.REMOTE_ID_ALREADY_EXISTS,
+                    Error = ECharacterError.REMOTE_ID_ALREADY_EXISTS,
                 };
             }
 
-            var character = new Player()
+            var player = new Player()
             {
-                Name = newCharacter.Name,
+                Name = newPlayer.Name,
                 Experience = 0,
                 Level = 1,
                 MaxHealth = 50,
                 MaxEnergy = 50,
                 Health = 50,
                 Energy = 50,
-                RemoteId = newCharacter.RemoteId,
+                RemoteId = newPlayer.RemoteId,
                 Skills = new List<Skill>
                 {
                     // Skills by default, mainly for the alpha phase.
@@ -71,13 +71,13 @@ namespace TaaontiaCore.Services
                     _db.Skill.First(skill => skill.Id == 2)
                 }
             };
-            await _db.Player.AddAsync(character);
+            await _db.Player.AddAsync(player);
             await _db.SaveChangesAsync();
 
             return new CharacterResult
             {
                 Result = EResult.SUCCESS,
-                Character = character,
+                Character = player,
             };
         }
 

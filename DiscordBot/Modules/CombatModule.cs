@@ -99,10 +99,20 @@ namespace Discord_Bot.Modules
             }
                 );
 
-            if (result.Error == TaaontiaCore.Enums.EFightError.ALREADY_IN_FIGHT)
+            if (result.Result != TaaontiaCore.Enums.EResult.SUCCESS)
             {
-                await ReplyAsync("You are already in a fight !");
-                return;
+                switch (result.Error)
+                {
+                    case TaaontiaCore.Enums.EFightError.NO_CURRENT_FIGHT:
+                        await ReplyAsync("You are already in a fight !");
+                        return;
+                    case TaaontiaCore.Enums.EFightError.NOT_ENOUGH_HEALTH:
+                        await ReplyAsync("You are too weak to engage in a fight");
+                        return;
+                    default:
+                        await ReplyAsync("An unknown error occured !");
+                        return;
+                }
             }
 
             var eb = new EmbedBuilder();
@@ -146,6 +156,7 @@ namespace Discord_Bot.Modules
         {
             var eb = new EmbedBuilder();
             var sb = new StringBuilder();
+            eb.Title = "Fight !";
 
             var playerAttackResult = await _taaontia.Fight.Action(new FightEvent
             {
@@ -167,29 +178,10 @@ namespace Discord_Bot.Modules
                         return;
                 }
             }
-            FightResult fiendAttackResult = null;
-            if (playerAttackResult.Fight.IsActive)
-            {
-                fiendAttackResult = await _taaontia.Fight.Action(new FightEvent
-                {
-                    RemoteId = Context.User.Id,
-                    Target = TaaontiaCore.Enums.EFightEventTarget.PLAYER,
-                    // TODO: Use skills that the fiend has actually access to
-                    SkillId = 1
-                }
-                    );
-            }
-            var ennemy = playerAttackResult.Fight.Fiend;
+
+            var enemy = playerAttackResult.Fight.Fiend;
             var character = playerAttackResult.Fight.Player;
 
-            eb.Title = "Fight !";
-            sb.AppendLine($"You hit the {ennemy.Name} for {playerAttackResult.TargetDamage} damage !");
-            if (playerAttackResult.Fight.IsActive)
-            {
-                sb.AppendLine($"The {ennemy.Name} hit you for {fiendAttackResult.TargetDamage} damage !");
-            }
-            sb.AppendLine($"{character.Name}: {character.Health} / {character.MaxHealth} HP");
-            sb.AppendLine($"{ennemy.Name}: {ennemy.Health} / {ennemy.MaxHealth} HP");
 
             if (!playerAttackResult.Fight.IsActive)
             {
@@ -198,9 +190,43 @@ namespace Discord_Bot.Modules
                 sb.AppendLine($"You gained {rewards.Experience} exp !");
                 sb.AppendLine($"You found {rewards.Currency} gold !");
             }
-            
+            else
+            {
+                sb.AppendLine($"You hit the {enemy.Name} for {playerAttackResult.TargetDamage} damage !");
+            }
+
+            if (playerAttackResult.Fight.IsActive)
+            {
+                FightResult fiendAttackResult = await _taaontia.Fight.Action(new FightEvent
+                {
+                    RemoteId = Context.User.Id,
+                    Target = TaaontiaCore.Enums.EFightEventTarget.PLAYER,
+                    // TODO: Use skills that the fiend has actually access to
+                    SkillId = 1
+                }
+        );
+                sb.AppendLine($"The {enemy.Name} hit you for {fiendAttackResult.TargetDamage} damage !");
+                if (fiendAttackResult.Fight.IsActive)
+                {
+                    sb.AppendLine($"{character.Name}: {character.Health} / {character.MaxHealth} HP");
+                    sb.AppendLine($"{enemy.Name}: {enemy.Health} / {enemy.MaxHealth} HP");
+                }
+                else
+                {
+                    sb.AppendLine($"\nYou died !");
+                    sb.AppendLine($"{enemy.Name} is taunting your corpse.");
+                }
+            }
+
             eb.Description = sb.ToString();
             await ReplyAsync(null, false, eb.Build());
+        }
+
+        [Command("actions")]
+        [Summary("List possible fight actions")]
+        public async Task Actions()
+        {
+
         }
 
         //[Command("defend")]

@@ -6,7 +6,7 @@ namespace TaaontiaCore.Events
 {
     public class CharacterResult: ResultBase
     {
-        public ECharacterCreationError? Error;
+        public ECharacterError? Error;
         public Player Character;
     }
 }
