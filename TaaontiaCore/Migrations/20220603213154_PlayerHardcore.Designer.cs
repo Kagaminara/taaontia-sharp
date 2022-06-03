@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaaontiaCore.Database;
 
 namespace TaaontiaCore.Migrations
 {
     [DbContext(typeof(TaaontiaEntities))]
-    partial class TaaontiaEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20220603213154_PlayerHardcore")]
+    partial class PlayerHardcore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

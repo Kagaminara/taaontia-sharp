@@ -25,6 +25,7 @@ namespace TaaontiaCore.Database.Models
         public ICollection<Skill> Skills { get; set; }
         public ICollection<Fight> Fights { get; set; }
         public ICollection<Event> Events { get; set; }
+        public bool IsHardcore { get; set; }
 
         public Player()
         {
